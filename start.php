@@ -11,10 +11,10 @@ elgg_register_event_handler('init', 'system', 'crud_init');
 global $CRUD_HANDLERS;
 
 /**
- * Format and return the URL for assemblies.
+ * Format and return the URL for crud object.
  *
  * @param ElggObject $entity Assembly object
- * @return string URL of assembly.
+ * @return string URL of crud object.
  */
 function crud_url_handler($entity) {
 	if (!$entity->getOwnerEntity()) {
@@ -31,13 +31,13 @@ function crud_url_handler($entity) {
 
 
 /**
- * Assemblies page handler
+ * CRUD page handler
  *
  * URLs take the form of
- *  List assemblies in group:   assembly/owner/<guid>
- *  View assembly:              assembly/view/<guid>
- *  Add assembly call:          assembly/add/<guid>
- *  Edit assembly call/minutes: assembly/edit/<guid>
+ *  List crud objects in group:   <crud_type>/owner/<guid>
+ *  View crud object:             <crud_type>/view/<guid>
+ *  Add crud object:              <crud_type>/add/<guid>
+ *  Edit crud object:             <crud_type>/edit/<guid>
  *
  * @param array $page Array of url segments for routing
  * @return bool
@@ -57,8 +57,9 @@ function crud_page_handler($page) {
 	$url_parts = explode('/', $current_url);
 	$crud_type = $url_parts[0];
 	$crud_handler = crud_get_handler($crud_type);
+	$crud_module = $crud_handler->module;
 
-	elgg_push_breadcrumb(elgg_echo('assemblies'), 'assemblies/all');
+	elgg_push_breadcrumb(elgg_echo($crud_module), $crud_module.'/all');
 
 	switch ($page[0]) {
 		case 'owner':
@@ -90,7 +91,7 @@ function crud_register_type($name) {
 	// routing of urls
 	elgg_register_page_handler($name, 'crud_page_handler');
 
-	// override the default url to view a assembly object
+	// override the default url to view a crud object
 	elgg_register_entity_url_handler('object', $name, 'crud_url_handler');
 
 	return $object;

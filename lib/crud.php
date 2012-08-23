@@ -4,7 +4,7 @@
  */
 
 /**
- * List assemblies in a group
+ * List crud objects in a group
  *
  * @param int $guid Group entity GUID
  */
@@ -56,10 +56,10 @@ function crud_handle_list_page($crud, $guid) {
 }
 
 /**
- * Edit or add an assembly
+ * Edit or add a crud object
  *
  * @param string $type 'add' or 'edit'
- * @param int    $guid GUID of group or assembly
+ * @param int    $guid GUID of group or crud object
  */
 function crud_handle_edit_page($crud, $type, $guid) {
 	gatekeeper();
@@ -73,13 +73,13 @@ function crud_handle_edit_page($crud, $type, $guid) {
 			forward();
 		}
 
-		// make sure user has permissions to add an assembly to container
+		// make sure user has permissions to add a crud object to container
 		if (!$group->canWriteToContainer(0, 'object', $crud_type)) {
-			register_error(elgg_echo('assembies:permissions:error'));
+			register_error(elgg_echo('crud:permissions:error'));
 			forward($group->getURL());
 		}
 
-		$title = elgg_echo('assembly:add');
+		$title = elgg_echo($crud_type . ':add');
 
 		elgg_push_breadcrumb($group->name, $crud_type."/owner/$group->guid");
 		elgg_push_breadcrumb($title);
@@ -119,14 +119,16 @@ function crud_handle_edit_page($crud, $type, $guid) {
 }
 
 /**
- * View an assembly
+ * View a crud object
  *
- * @param int $guid GUID of assembly
+ * @param int $guid GUID of a crud object
  */
 function crud_handle_view_page($crud, $guid) {
 	// We now have RSS on assemblies
 	global $autofeed;
 	$autofeed = true;
+
+	$crud_type = $crud->crud_type;
 
 	$group = get_entity($guid);
 	if (!$group) {
@@ -146,7 +148,7 @@ function crud_handle_view_page($crud, $guid) {
 
 	group_gatekeeper();
 
-	elgg_push_breadcrumb($group->name, "assembly/owner/$group->guid");
+	elgg_push_breadcrumb($group->name, "$crud_type/owner/$group->guid");
 	elgg_push_breadcrumb($entity->title);
 
 	$content = elgg_view_entity($entity, array('full_view' => true));
@@ -164,12 +166,13 @@ function crud_handle_view_page($crud, $guid) {
 }
 
 /**
- * Prepare assembly form variables
+ * Prepare crud object form variables
  *
- * @param ElggObject $assembly Assembly object if editing
+ * @param ElggObject $object Crud object if editing
  * @return array
  */
-function crud_prepare_form_vars($crud, $assembly = NULL) {
+function crud_prepare_form_vars($crud, $object = NULL) {
+	$crud_type = $crud->crud_type;
 	// input names => defaults
 	$values = array(
 		'title' => '',
@@ -179,25 +182,25 @@ function crud_prepare_form_vars($crud, $assembly = NULL) {
 		'crud' => $crud,
 		'container_guid' => elgg_get_page_owner_guid(),
 		'guid' => null,
-		'entity' => $assembly,
+		'entity' => $object,
 	);
 
-	if ($assembly) {
+	if ($object) {
 		foreach (array_keys($values) as $field) {
 			if (isset($entity->$field)) {
-				$values[$field] = $assembly->$field;
+				$values[$field] = $object->$field;
 			}
 		}
 	}
 
-	if (elgg_is_sticky_form('assemblies')) {
-		$sticky_values = elgg_get_sticky_values('assemblies');
+	if (elgg_is_sticky_form($crud_type)) {
+		$sticky_values = elgg_get_sticky_values($crud_type);
 		foreach ($sticky_values as $key => $value) {
 			$values[$key] = $value;
 		}
 	}
 
-	elgg_clear_sticky_form('assemblies');
+	elgg_clear_sticky_form($crud_type);
 
 	return $values;
 }

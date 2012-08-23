@@ -1,11 +1,16 @@
 <?php
 /**
- * Create or edit an assembly
+ * Create or edit a crud object
  *
  * @package Assemblies
  */
 
-$variables = elgg_get_config('assembly');
+$crud_type = get_input('crud');
+$crud = crud_get_handler($crud_type);
+
+$msg_prefix = $crud->module.":$crud_type";
+
+$variables = elgg_get_config($crud_type);
 $input = array();
 foreach ($variables as $name => $type) {
 	$input[$name] = get_input($name);
@@ -18,50 +23,50 @@ foreach ($variables as $name => $type) {
 }
 
 // Get guids
-$assembly_guid = (int)get_input('guid');
+$entity_guid = (int)get_input('guid');
 $container_guid = (int)get_input('container_guid');
 
-elgg_make_sticky_form('assembly');
+elgg_make_sticky_form($crud_type);
 
 /*if (!$input['title']) {
-	register_error(elgg_echo('assemblies:assembly:error:no_title'));
+	register_error(elgg_echo($msg_prefix.':error:no_title'));
 	forward(REFERER);
 }*/
 
-if ($assembly_guid) {
-	$assembly = get_entity($assembly_guid);
-	if (!$assembly || !$assembly->canEdit()) {
-		register_error(elgg_echo('assemblies:assembly:error:no_save'));
+if ($entity_guid) {
+	$entity = get_entity($entity_guid);
+	if (!$entity || !$entity->canEdit()) {
+		register_error(elgg_echo($msg_prefix.':error:no_save'));
 		forward(REFERER);
 	}
-	$new_assembly = false;
+	$new_entity = false;
 } else {
-	$assembly = new ElggAssembly();
-	$assembly->subtype = 'assembly';
-	$new_assembly = true;
+	$entity = new ElggObject();
+	$entity->subtype = $crud_type;
+	$new_entity = true;
 }
 
 if (sizeof($input) > 0) {
 	foreach ($input as $name => $value) {
-		$assembly->$name = $value;
+		$entity->$name = $value;
 	}
 }
 
 // need to add check to make sure user can write to container
-$assembly->container_guid = $container_guid;
+$entity->container_guid = $container_guid;
 
-if ($assembly->save()) {
+if ($entity->save()) {
 
-	elgg_clear_sticky_form('assembly');
+	elgg_clear_sticky_form($crud_type);
 
-	system_message(elgg_echo('assemblies:assembly:saved'));
+	system_message(elgg_echo($msg_prefix.':saved'));
 
-	if ($new_assembly) {
-		add_to_river('river/object/crud/create', 'create', elgg_get_logged_in_user_guid(), $assembly->guid);
+	if ($new_entity) {
+		add_to_river('river/object/crud/create', 'create', elgg_get_logged_in_user_guid(), $entity->guid);
 	}
 
-	forward($assembly->getURL());
+	forward($entity->getURL());
 } else {
-	register_error(elgg_echo('assemblies:assembly:error:no_save'));
+	register_error(elgg_echo($msg_prefix.':error:no_save'));
 	forward(REFERER);
 }
