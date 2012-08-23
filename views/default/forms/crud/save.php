@@ -49,14 +49,6 @@ $save_button = elgg_view('input/submit', array(
 ));
 $action_buttons = $save_button . $delete_link;
 
-$save_status = elgg_echo('crud:save_status');
-if ($vars['guid']) {
-	$entity = get_entity($vars['guid']);
-	$saved = date('F j, Y @ H:i', $entity->time_created);
-} else {
-	$saved = elgg_echo('crud:never');
-}
-
 // hidden inputs
 $container_guid_input = elgg_view('input/hidden', array('name' => 'container_guid', 'value' => elgg_get_page_owner_guid()));
 $guid_input = elgg_view('input/hidden', array('name' => 'guid', 'value' => $vars['guid']));
@@ -66,10 +58,6 @@ $crud_input = elgg_view('input/hidden', array('name' => 'crud', 'value' => $crud
 echo <<<___HTML
 
 <div class="elgg-foot">
-	<div class="elgg-subtext mbm">
-	$save_status <span class="object-save-status-time">$saved</span>
-	</div>
-
 	$guid_input
 	$container_guid_input
 	$crud_input
