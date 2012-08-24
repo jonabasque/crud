@@ -239,3 +239,36 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 	return $values;
 }
 
+function crud_list_children($entity) {
+	$crud = crud_get_handler($entity->getType());
+	$child_subtype = $crud->children_type;
+	$child_options = array('full_view' => FALSE,
+			'types' => 'object',
+			'subtypes' => $child_subtype,
+			'limit' => 10,
+			'metadata_name_value_pairs' => array(
+				array('name' => 'parent_guid',
+					'value' => $entity->guid)
+				)
+			);
+
+	$children = elgg_list_entities_from_metadata($child_options);
+	return $children;
+}
+
+function crud_get_children($entity) {
+	$crud = crud_get_handler($entity->getType());
+	$child_subtype = $crud->children_type;
+	$child_options = array('full_view' => FALSE,
+			'types' => 'object',
+			'subtypes' => $child_subtype,
+			'limit' => 10,
+			'metadata_name_value_pairs' => array(
+				array('name' => 'parent_guid',
+					'value' => $entity->guid)
+				)
+			);
+
+	$children = elgg_get_entities_from_metadata($child_options);
+	return $children;
+}
