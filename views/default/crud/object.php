@@ -82,17 +82,7 @@ if ($full) {
 	$info = elgg_view_image_block($icon, $list_body);
 
 	if (!empty($child_subtype)) {
-		$child_options = array('full_view' => FALSE,
-				'types' => 'object',
-				'subtypes' => $child_subtype,
-				'limit' => 10,
-				'metadata_name_value_pairs' => array(
-                        		array('name' => 'parent_guid',
-						'value' => $crud->guid)
-					)
-				);
-
-		$children = elgg_list_entities_from_metadata($child_options);
+		$children = crud_list_children($crud);
 
 		$children_content = '<div class="elgg-list">';
 		$children_content .= '<h3>'.elgg_echo('assemblies:agenda').'</h3>';
