@@ -195,6 +195,8 @@ function crud_handle_view_page($crud, $guid) {
  */
 function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 	$crud_type = $crud->crud_type;
+	if ($object)
+		$guid = $object->guid;
 	// input names => defaults
 	$values = array(
 		'title' => $object->title,
@@ -204,13 +206,22 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 		'crud' => $crud,
 		'container_guid' => elgg_get_page_owner_guid(),
 		'parent_guid' => $parent->guid,
-		'guid' => null,
+		'guid' => $guid,
 		'entity' => $object,
 	);
 
+	$variables = elgg_get_config($crud_type);
+	foreach ($variables as $name => $type) {
+		if (!in_array($name, $values)) {
+			if ($type == 'date') {
+				$values[$name] = time();
+			}
+		}
+	}
+
 	if ($object) {
 		foreach (array_keys($values) as $field) {
-			if (isset($entity->$field)) {
+			if (isset($object->$field)) {
 				$values[$field] = $object->$field;
 			}
 		}
