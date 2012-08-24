@@ -25,6 +25,7 @@ foreach ($variables as $name => $type) {
 // Get guids
 $entity_guid = (int)get_input('guid');
 $container_guid = (int)get_input('container_guid');
+$parent_guid = (int)get_input('parent_guid');
 
 elgg_make_sticky_form($crud_type);
 
@@ -50,6 +51,11 @@ if (sizeof($input) > 0) {
 	foreach ($input as $name => $value) {
 		$entity->$name = $value;
 	}
+}
+
+// set parent if set
+if (!empty($parent_guid)) {
+	$entity->parent_guid = $parent_guid;
 }
 
 // need to add check to make sure user can write to container

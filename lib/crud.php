@@ -67,11 +67,19 @@ function crud_handle_edit_page($crud, $type, $guid) {
 	$crud_type = $crud->crud_type;
 
 	if ($type == 'add') {
-		$group = get_entity($guid);
+		$parent = get_entity($guid);
+		if ($parent instanceof ElggGroup) {
+			$group = $parent;
+			$parent = NULL;
+		}
+		else {
+			$group = get_entity($parent->container_guid);
+		}
 		if (!$group) {
 			register_error(elgg_echo('groups:notfound'));
 			forward();
 		}
+		elgg_set_page_owner_guid($group->guid);
 
 		// make sure user has permissions to add a crud object to container
 		if (!$group->canWriteToContainer(0, 'object', $crud_type)) {
@@ -84,7 +92,7 @@ function crud_handle_edit_page($crud, $type, $guid) {
 		elgg_push_breadcrumb($group->name, $crud_type."/owner/$group->guid");
 		elgg_push_breadcrumb($title);
 
-		$body_vars = crud_prepare_form_vars($crud);
+		$body_vars = crud_prepare_form_vars($crud, NULL, $parent);
 		$content = elgg_view_form('crud/save', array('crud' => $crud), $body_vars);
 	} else {
 		$entity = get_entity($guid);
@@ -104,7 +112,7 @@ function crud_handle_edit_page($crud, $type, $guid) {
 		elgg_push_breadcrumb($entity->title, $entity->getURL());
 		elgg_push_breadcrumb($title);
 
-		$body_vars = crud_prepare_form_vars($crud, $entity);
+		$body_vars = crud_prepare_form_vars($crud, $entity, $entity->parent_guid);
 		$content = elgg_view_form('crud/save', array('crud' => $crud), $body_vars);
 	}
 
@@ -176,7 +184,7 @@ function crud_handle_view_page($crud, $guid) {
  * @param ElggObject $object Crud object if editing
  * @return array
  */
-function crud_prepare_form_vars($crud, $object = NULL) {
+function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 	$crud_type = $crud->crud_type;
 	// input names => defaults
 	$values = array(
@@ -186,6 +194,7 @@ function crud_prepare_form_vars($crud, $object = NULL) {
 		'tags' => '',
 		'crud' => $crud,
 		'container_guid' => elgg_get_page_owner_guid(),
+		'parent_guid' => $parent->guid,
 		'guid' => null,
 		'entity' => $object,
 	);

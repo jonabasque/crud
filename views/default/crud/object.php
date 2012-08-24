@@ -83,10 +83,13 @@ if ($full) {
 	$child_options = array('full_view' => FALSE,
 				'types' => 'object',
 				'subtypes' => 'agenda_point',
-				'container_guid' => $crud->guid,
-				'limit' => 10
+				'limit' => 10,
+				'metadata_name_value_pairs' => array(
+                        		array('name' => 'parent_guid',
+						'value' => $crud->guid)
+					)
 				);
-	$children = elgg_list_entities($child_options);
+	$children = elgg_list_entities_from_metadata($child_options);
 
 	$children_content = '<div class="elgg-list">';
 	$children_content .= '<h3>'.elgg_echo('assemblies:agenda').'</h3>';
@@ -95,6 +98,11 @@ if ($full) {
 	else
 		$children_content .= elgg_echo("crud:$object_subtype:nochildren");
 	$children_content .= '</div>';
+	$parent_guid = $crud->parent_guid;
+	if ($parent_guid) {
+		$parent = get_entity($parent_guid);
+	}
+
 
 	echo <<<HTML
 $info
