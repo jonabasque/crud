@@ -14,7 +14,15 @@ function crud_handle_list_page($crud, $guid) {
 
 	$crud_type = $crud->crud_type;
 
-	$group = get_entity($guid);
+	$parent = get_entity($guid);
+	if ($parent instanceof ElggGroup) {
+		$group = $parent;
+		$parent = NULL;
+	}
+	else {
+		$group = get_entity($parent->container_guid);
+	}
+
 	if (!$group) {
 		register_error(elgg_echo('groups:notfound'));
 		forward();
@@ -105,6 +113,7 @@ function crud_handle_edit_page($crud, $type, $guid) {
 			register_error(elgg_echo('groups:notfound'));
 			forward();
 		}
+		$parent = get_entity($entity->parent_guid);
 
 		$title = elgg_echo($crud_type . ':edit');
 
@@ -112,7 +121,7 @@ function crud_handle_edit_page($crud, $type, $guid) {
 		elgg_push_breadcrumb($entity->title, $entity->getURL());
 		elgg_push_breadcrumb($title);
 
-		$body_vars = crud_prepare_form_vars($crud, $entity, $entity->parent_guid);
+		$body_vars = crud_prepare_form_vars($crud, $entity, $parent);
 		$content = elgg_view_form('crud/save', array('crud' => $crud), $body_vars);
 	}
 
@@ -188,8 +197,8 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 	$crud_type = $crud->crud_type;
 	// input names => defaults
 	$values = array(
-		'title' => '',
-		'description' => '',
+		'title' => $object->title,
+		'description' => $object->description,
 		'access_id' => ACCESS_DEFAULT,
 		'tags' => '',
 		'crud' => $crud,
