@@ -59,7 +59,7 @@ function crud_page_handler($page) {
 	$crud_handler = crud_get_handler($crud_type);
 	$crud_module = $crud_handler->module;
 
-	elgg_push_breadcrumb(elgg_echo($crud_module), $crud_module.'/all');
+	elgg_push_breadcrumb(elgg_echo($crud_module), '');
 
 	switch ($page[0]) {
 		case 'owner':

@@ -135,6 +135,30 @@ function crud_handle_edit_page($crud, $type, $guid) {
 	echo elgg_view_page($title, $body);
 }
 
+function crud_push_breadcrumb($last, $entity, $crud = NULL) {
+	if (empty($crud)) {
+		$crud = crud_get_handler($entity->getSubtype());
+	}
+
+	if ($entity->parent_guid) {
+		$parent = get_entity($entity->parent_guid);
+		crud_push_breadcrumb($last, $parent);
+	}
+	else {
+		$group = $entity->getContainerEntity();
+		elgg_push_breadcrumb($group->name, "$crud->crud_type/owner/$entity->container_guid");
+	}
+	
+	$title = $entity->title;
+	if (empty($title)) {
+		$title = elgg_echo("$crud->module:$crud->crud_type");
+	}
+	if ($entity == $last)
+		elgg_push_breadcrumb($title);
+	else
+		elgg_push_breadcrumb($title, "$crud->crud_type/view/$entity->guid");
+}
+
 /**
  * View a crud object
  *
@@ -147,7 +171,16 @@ function crud_handle_view_page($crud, $guid) {
 
 	$crud_type = $crud->crud_type;
 
-	$group = get_entity($guid);
+	$entity = get_entity($guid);
+	$parent = get_entity($entity->parent_guid);
+	if ($parent instanceof ElggGroup) {
+		$group = $parent;
+		$parent = NULL;
+	}
+	else {
+		$group = get_entity($entity->container_guid);
+	}
+
 	if (!$group) {
 		register_error(elgg_echo('noaccess'));
 		$_SESSION['last_forward_from'] = current_page_url();
@@ -159,19 +192,17 @@ function crud_handle_view_page($crud, $guid) {
 		register_error(elgg_echo('groups:notfound'));
 		forward();
 	}*/
-	$entity = $group;
 
 	if (!empty($crud->children_type)) {
 		elgg_set_page_owner_guid($guid);
 		elgg_register_title_button($crud->children_type);
 	}
 
-	elgg_set_page_owner_guid($group->container_guid);
+	elgg_set_page_owner_guid($entity->container_guid);
 
 	group_gatekeeper();
 
-	elgg_push_breadcrumb($group->name, "$crud_type/owner/$group->guid");
-	elgg_push_breadcrumb($entity->title);
+	crud_push_breadcrumb($entity, $entity, $crud);
 
 	$content = elgg_view_entity($entity, array('full_view' => true));
 	
@@ -240,7 +271,7 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 }
 
 function crud_list_children($entity) {
-	$crud = crud_get_handler($entity->getType());
+	$crud = crud_get_handler($entity->getSubtype());
 	$child_subtype = $crud->children_type;
 	$child_options = array('full_view' => FALSE,
 			'types' => 'object',
@@ -257,7 +288,7 @@ function crud_list_children($entity) {
 }
 
 function crud_get_children($entity) {
-	$crud = crud_get_handler($entity->getType());
+	$crud = crud_get_handler($entity->getSubtype());
 	$child_subtype = $crud->children_type;
 	$child_options = array('full_view' => FALSE,
 			'types' => 'object',
