@@ -20,6 +20,9 @@ foreach ($variables as $name => $type) {
 	if ($type == 'tags') {
 		$input[$name] = string_to_tag_array($input[$name]);
 	}
+	if ($type == 'date') {
+		$input[$name] = strtotime($input[$name]." ".date_default_timezone_get());
+	}
 }
 
 // Get guids
