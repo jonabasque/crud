@@ -144,6 +144,11 @@ function crud_handle_view_page($crud, $guid) {
 	}*/
 	$entity = $group;
 
+	if (!empty($crud->children_type)) {
+		elgg_set_page_owner_guid($guid);
+		elgg_register_title_button($crud->children_type);
+	}
+
 	elgg_set_page_owner_guid($group->container_guid);
 
 	group_gatekeeper();

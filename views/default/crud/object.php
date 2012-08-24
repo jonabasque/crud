@@ -95,12 +95,6 @@ if ($full) {
 	else
 		$children_content .= elgg_echo("crud:$object_subtype:nochildren");
 	$children_content .= '</div>';
-	$children_controls = elgg_view('output/url', array(
-	'href' => "crud/addchild/$crud->guid",
-	'text' => elgg_echo("crud:$object_subtype:addchild")
-));
-
-	$children_content .= $children_controls;
 
 	echo <<<HTML
 $info
