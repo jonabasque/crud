@@ -16,6 +16,7 @@ $crud= elgg_extract('entity', $vars, FALSE);
 $object_subtype = $crud->getSubtype();
 
 $crud_object = crud_get_handler($object_subtype);
+$child_subtype = $crud_object->children_type;
 
 if (!$crud) {
 	return TRUE;
@@ -80,27 +81,30 @@ if ($full) {
 
 	$info = elgg_view_image_block($icon, $list_body);
 
-	$child_options = array('full_view' => FALSE,
+	if (!empty($child_subtype)) {
+		$child_options = array('full_view' => FALSE,
 				'types' => 'object',
-				'subtypes' => 'agenda_point',
+				'subtypes' => $child_subtype,
 				'limit' => 10,
 				'metadata_name_value_pairs' => array(
                         		array('name' => 'parent_guid',
 						'value' => $crud->guid)
 					)
 				);
-	$children = elgg_list_entities_from_metadata($child_options);
 
-	$children_content = '<div class="elgg-list">';
-	$children_content .= '<h3>'.elgg_echo('assemblies:agenda').'</h3>';
-	if (!empty($children))
-		$children_content .= $children;
-	else
-		$children_content .= elgg_echo("crud:$object_subtype:nochildren");
-	$children_content .= '</div>';
-	$parent_guid = $crud->parent_guid;
-	if ($parent_guid) {
-		$parent = get_entity($parent_guid);
+		$children = elgg_list_entities_from_metadata($child_options);
+
+		$children_content = '<div class="elgg-list">';
+		$children_content .= '<h3>'.elgg_echo('assemblies:agenda').'</h3>';
+		if (!empty($children))
+			$children_content .= $children;
+		else
+			$children_content .= elgg_echo("crud:$object_subtype:nochildren");
+		$children_content .= '</div>';
+		$parent_guid = $crud->parent_guid;
+		if ($parent_guid) {
+			$parent = get_entity($parent_guid);
+		}
 	}
 
 
