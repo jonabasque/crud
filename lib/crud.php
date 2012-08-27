@@ -243,12 +243,13 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 
 	$variables = elgg_get_config($crud_type);
 	foreach ($variables as $name => $type) {
-		if (!in_array($name, $values)) {
+		if (empty($values[$name])) {
 			if ($type == 'date') {
 				$values[$name] = time();
 			}
-			else
+			else {
 				$values[$name] = '';
+			}
 		}
 	}
 
