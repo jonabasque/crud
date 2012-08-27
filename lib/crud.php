@@ -97,7 +97,11 @@ function crud_handle_edit_page($crud, $type, $guid) {
 
 		$title = elgg_echo($crud_type . ':add');
 
-		elgg_push_breadcrumb($group->name, $crud_type."/owner/$group->guid");
+		if ($parent) {
+			crud_push_breadcrumb('new', $parent);
+		}
+		else
+			elgg_push_breadcrumb($group->name, $crud_type."/owner/$group->guid");
 		elgg_push_breadcrumb($title);
 
 		$body_vars = crud_prepare_form_vars($crud, NULL, $parent);
