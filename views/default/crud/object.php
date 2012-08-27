@@ -92,8 +92,12 @@ if ($full) {
 
 
 	$info = elgg_view_image_block($icon, $list_body);
+
+	// Owner
+	$body .= "<b>".elgg_echo("$crud_object->module:$crud_object->crud_type:owner", array($owner_link))."</b>";
 	$body .= $variables;
 
+	// Children
 	if (!empty($child_subtype)) {
 		$children = crud_list_children($crud);
 

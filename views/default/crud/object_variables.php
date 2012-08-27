@@ -9,10 +9,13 @@
 			continue;
 	?>
 	<div>
-		<label><b><?php echo elgg_echo("$crud_object->module:$object_subtype:$name") ?></b></label>
 		<?php
+			if ($name != 'tags') {
+		?>
+		<label><b><?php echo elgg_echo("$crud_object->module:$object_subtype:$name") ?>: </b></label>
+		<?php
+			}
 			if ($type != 'longtext') {
-				echo '<br />';
 			}
 		?>
 		<?php echo elgg_view("output/$type", array(
