@@ -146,8 +146,13 @@ HTML;
 		'subtitle' => $subtitle,
 		'tags' => false,
 	);
-	if (empty($title))
-		$params['title'] = date("m/d/Y", $crud->date);
+	if (empty($title)) {
+		$title_link = elgg_view('output/url', array(
+			'href' => $crud->getURL(),
+			'text' => date("m/d/Y", $crud->date),
+		));
+		$params['title'] = $title_link;
+	}
 	$params = $params + $vars;
 	$list_body = elgg_view('object/elements/summary', $params);
 
