@@ -149,7 +149,7 @@ HTML;
 	if (empty($title)) {
 		$title_link = elgg_view('output/url', array(
 			'href' => $crud->getURL(),
-			'text' => date("m/d/Y", $crud->date),
+			'text' => date(elgg_echo('crud:date_format'), $crud->date),
 		));
 		$params['title'] = $title_link;
 	}
