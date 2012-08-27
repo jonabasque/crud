@@ -247,6 +247,8 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 			if ($type == 'date') {
 				$values[$name] = time();
 			}
+			else
+				$values[$name] = '';
 		}
 	}
 

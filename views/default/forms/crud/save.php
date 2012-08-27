@@ -27,7 +27,7 @@ foreach ($variables as $name => $type) {
 	<?php echo elgg_view("input/$type", array(
 			'crud' => $crud,
 			'name' => $name,
-			'value' => $object->$name,
+			'value' => $vars[$name],
 		));
 	?>
 </div>

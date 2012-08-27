@@ -94,6 +94,9 @@ function crud_register_type($name) {
 	// override the default url to view a crud object
 	elgg_register_entity_url_handler('object', $name, 'crud_url_handler');
 
+	$action_path = elgg_get_plugins_path() . 'crud/actions/crud';
+	elgg_register_action("$name/save", "$action_path/save.php");
+	elgg_register_action("$name/delete", "$action_path/delete.php");
 	return $object;
 }
 
