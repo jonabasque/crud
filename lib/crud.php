@@ -44,7 +44,7 @@ function crud_handle_list_page($crud, $guid) {
 		'full_view' => false,
 	);
 
-	$content = elgg_view($crud->module.'/general', array('entity'=>$guid));
+	$content = elgg_view($crud->module."/$crud_type"."_general", array('entity'=>$guid));
 
 	$content .= elgg_list_entities($options);
 	if (!$content) {
