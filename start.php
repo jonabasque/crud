@@ -74,6 +74,9 @@ function crud_page_handler($page) {
 		case 'view':
 			crud_handle_view_page($crud_handler, $page[1]);
 			break;
+		case 'edit_general':
+			crud_handle_edit_page($crud_handler, 'edit_general', $page[1]);
+			break;
 		default:
 			return false;
 	}

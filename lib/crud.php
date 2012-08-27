@@ -46,6 +46,9 @@ function crud_handle_list_page($crud, $guid) {
 
 
 	$content = elgg_view($crud->module."/$crud_type"."_general", array('entity'=>$guid));
+	if ($content) {
+		elgg_register_title_button($crud->crud_type, 'edit_general');
+	}
 
 	$navigation = $crud->getListTabFilter();
 	$content .= $crud->getListTabContent();
@@ -104,6 +107,22 @@ function crud_handle_edit_page($crud, $type, $guid) {
 
 		$body_vars = crud_prepare_form_vars($crud, NULL, $parent);
 		$content = elgg_view_form('crud/save', array('crud' => $crud), $body_vars);
+	} elseif ($type == 'edit_general') {
+		$entity = get_entity($guid);
+		if (!$entity || !$entity->canEdit()) {
+			register_error(elgg_echo('groups:notfound'));
+			forward();
+		}
+		$group = $entity;
+
+		$title = elgg_echo($crud_type . ':edit_general');
+
+		elgg_push_breadcrumb($group->name, $crud_type . "/owner/$group->guid");
+		elgg_push_breadcrumb($title);
+
+		$body_vars = crud_prepare_form_vars($crud, $entity, $parent);
+		$content = elgg_view_form($crud->module.'/general', array('crud' => $crud), $body_vars);
+
 	} else {
 		$entity = get_entity($guid);
 		if (!$entity || !$entity->canEdit()) {
