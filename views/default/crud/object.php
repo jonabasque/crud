@@ -11,7 +11,7 @@
 elgg_load_library('elgg:crud');
 
 $full = elgg_extract('full_view', $vars, FALSE);
-$crud= elgg_extract('entity', $vars, FALSE);
+$crud = elgg_extract('entity', $vars, FALSE);
 
 $object_subtype = $crud->getSubtype();
 
@@ -24,10 +24,18 @@ if (!$crud) {
 
 $icon = elgg_view_entity_icon($crud, 'tiny');
 
-$status = $crud->status;
+if ($crud_object->icon_var) {
+	$var_name = $crud_object->icon_var;
+	$status = $crud->$var_name;
 
-if(!in_array($status, array('new', 'assigned', 'unassigned', 'active', 'done', 'closed', 'reopened'))){
-	$status = 'new';
+	if(empty($status)) {
+		$status = 'new';
+	}
+
+	$icon = elgg_view('output/img', array('src'=>"/mod/$crud_object->module/graphics/$crud_object->crud_type-icons/$status.png"));
+}
+else {
+	$icon = '';
 }
 
 $owner = get_entity($crud->owner_guid);
@@ -37,7 +45,7 @@ $owner_link = elgg_view('output/url', array(
 ));
 
 $date = elgg_view_friendly_time($crud->time_status_changed);
-$strapline = elgg_echo("crud:strapline:$status", array($date, $owner_link));
+//$strapline = elgg_echo("crud:strapline:$status", array($date, $owner_link));
 $tags = elgg_view('output/tags', array('tags' => $crud->tags));
 
 $comments_count = $crud->countComments();
@@ -67,25 +75,30 @@ if (elgg_in_context('widgets')) {
 }
 
 if ($full) {
+	//$icon = '';
 	$body = elgg_view('output/longtext', array('value' => $crud->description));
 
 	$params = array(
 		'entity' => $page,
 		'title' => false,
 		'metadata' => $metadata,
-		'subtitle' => $subtitle,
-		'tags' => $tags,
+		'subtitle' => '',
+		'tags' => false,
 	);
+	$variables = elgg_view('crud/object_variables', array('entity'=>$crud));
+
 	$params = $params + $vars;
 	$list_body = elgg_view('object/elements/summary', $params);
 
+
 	$info = elgg_view_image_block($icon, $list_body);
+	$body .= $variables;
 
 	if (!empty($child_subtype)) {
 		$children = crud_list_children($crud);
 
-		$children_content = '<div class="elgg-list">';
-		$children_content .= '<h3>'.elgg_echo('assemblies:agenda').'</h3>';
+		$children_content = '<div class="crud-children">';
+		$children_content .= '<h3><b>'.elgg_echo('assemblies:agenda').'</b></h3>';
 		if (!empty($children))
 			$children_content .= $children;
 		else
@@ -106,17 +119,34 @@ HTML;
 
 } else {
 	// brief view
+	$children_count = crud_count_children($crud);
+	//only display if there are commments
+	if ($children_count != 0) {
+		$text = elgg_echo("$crud_object->module:$crud_object->crud_type:children") . " ($children_count)";
+		$children_link = elgg_view('output/url', array(
+			'href' => $crud->getURL() . '#crud-comments',
+			'text' => $text,
+		));
+	} else {
+		$children_link = '';
+	}
+
+	$subtitle = $children_link . "" . $subtitle; 
+
 
 	$excerpt = elgg_get_excerpt($crud->description);
-
+	$title = $crud->title;
 	$params = array(
 		'entity' => $crud,
 		'metadata' => $metadata,
 		'subtitle' => $subtitle,
 		'tags' => false,
 	);
+	if (empty($title))
+		$params['title'] = date("m/d/Y", $crud->date);
 	$params = $params + $vars;
 	$list_body = elgg_view('object/elements/summary', $params);
 
+	#echo $list_body;
 	echo elgg_view_image_block($icon, $list_body);
 }

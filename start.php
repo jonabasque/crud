@@ -108,6 +108,8 @@ function crud_get_handler($name) {
 function crud_init() {
 	global $CRUD_HANDLERS;
 	elgg_register_library('elgg:crud', elgg_get_plugins_path() . 'crud/lib/crud.php');
+	// add to the main css
+	elgg_extend_view('css/elgg', 'crud/css');
 	$CRUD_HANDLERS = array();
 
 	// register actions

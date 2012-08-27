@@ -38,7 +38,7 @@ function crud_handle_list_page($crud, $guid) {
 	$options = array(
 		'type' => 'object',
 		'subtype' => $crud_type,
-		'limit' => 20,
+		'limit' => 10,
 		'order_by' => 'e.last_action desc',
 		'container_guid' => $guid,
 		'full_view' => false,
@@ -294,6 +294,22 @@ function crud_get_children($entity) {
 			'types' => 'object',
 			'subtypes' => $child_subtype,
 			'limit' => 10,
+			'metadata_name_value_pairs' => array(
+				array('name' => 'parent_guid',
+					'value' => $entity->guid)
+				)
+			);
+
+	$children = elgg_get_entities_from_metadata($child_options);
+	return $children;
+}
+function crud_count_children($entity) {
+	$crud = crud_get_handler($entity->getSubtype());
+	$child_subtype = $crud->children_type;
+	$child_options = array('full_view' => FALSE,
+			'types' => 'object',
+			'subtypes' => $child_subtype,
+			'count' => TRUE,
 			'metadata_name_value_pairs' => array(
 				array('name' => 'parent_guid',
 					'value' => $entity->guid)
