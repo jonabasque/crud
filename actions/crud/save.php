@@ -73,6 +73,9 @@ if ($entity->save()) {
 	if ($new_entity) {
 		add_to_river('river/object/crud/create', 'create', elgg_get_logged_in_user_guid(), $entity->guid);
 	}
+	else {
+		add_to_river('river/object/crud/create', 'edited', elgg_get_logged_in_user_guid(), $entity->guid);
+	}
 
 	forward($entity->getURL());
 } else {
