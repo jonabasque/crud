@@ -39,23 +39,21 @@ function crud_handle_list_page($crud, $guid) {
 		'type' => 'object',
 		'subtype' => $crud_type,
 		'limit' => 10,
-		'order_by' => 'e.last_action desc',
+	#	'order_by' => 'e.last_action desc',
 		'container_guid' => $guid,
 		'full_view' => false,
 	);
 
+
 	$content = elgg_view($crud->module."/$crud_type"."_general", array('entity'=>$guid));
 
-	$content .= elgg_list_entities($options);
-	if (!$content) {
-		$content = elgg_echo($crud->module.':none');
-	}
-
+	$navigation = $crud->getListTabFilter();
+	$content .= $crud->getListTabContent();
 
 	$params = array(
 		'content' => $content,
 		'title' => $title,
-		'filter' => '',
+		'filter' => $navigation,
 	);
 
 	$body = elgg_view_layout('content', $params);
@@ -287,7 +285,7 @@ function crud_list_children($entity) {
 			'metadata_name_value_pairs' => array(
 				array('name' => 'parent_guid',
 					'value' => $entity->guid)
-				)
+				),
 			);
 
 	$children = elgg_list_entities_from_metadata($child_options);
