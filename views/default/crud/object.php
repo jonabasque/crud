@@ -76,7 +76,8 @@ if (elgg_in_context('widgets')) {
 
 if ($full) {
 	//$icon = '';
-	$body = elgg_view('output/longtext', array('value' => $crud->description));
+	$body = elgg_view($crud_object->crud_type . '/profile_extra', $vars);
+	$body .= elgg_view('output/longtext', array('value' => $crud->description));
 
 	$params = array(
 		'entity' => $page,
@@ -102,7 +103,7 @@ if ($full) {
 		$children = crud_list_children($crud);
 
 		$children_content = '<div class="crud-children">';
-		$children_content .= '<h3><b>'.elgg_echo('assemblies:agenda').'</b></h3>';
+		$children_content .= '<h3><b>'.elgg_echo("$crud_object->module:$crud_object->crud_type:children").'</b></h3>';
 		if (!empty($children))
 			$children_content .= $children;
 		else
