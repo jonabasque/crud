@@ -137,6 +137,7 @@ HTML;
 	}
 
 	$subtitle = $children_link . "" . $subtitle; 
+	$subtitle .= elgg_view($crud_object->crud_type . '/profile_extra', $vars);
 
 
 	$excerpt = elgg_get_excerpt($crud->description);
