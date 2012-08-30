@@ -18,6 +18,7 @@ $variables = elgg_get_config($crud_type);
 foreach ($variables as $name => $type) {
 	
 	if (is_array($type)) {
+		$default_value = $type['value'];
 		$type = $type['input_type'];
 	}
 	
@@ -31,7 +32,7 @@ foreach ($variables as $name => $type) {
 	echo elgg_view("input/$type", array(
 		'crud' => $crud,
 		'name' => $name,
-		'value' => $vars[$name],
+		'value' => $vars[$name] ? $vars[$name] : $default_value,
 	));
 	echo '</div>';
 }
