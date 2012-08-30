@@ -5,8 +5,14 @@
 
 	$variables = elgg_get_config($object_subtype);
 	foreach ($variables as $name => $type) {
-		if (in_array($name, array('title', 'description', 'access_id')))
+		$value = $entity->$name;
+		
+		if (in_array($name, array('title', 'description', 'access_id'))) {
 			continue;
+		}
+		if (!$value) {
+			continue;
+		}
 	?>
 	<div>
 		<?php
@@ -20,7 +26,7 @@
 		?>
 		<?php echo elgg_view("output/$type", array(
 				'name' => $name,
-				'value' => $entity->$name,
+				'value' => $value,
 			));
 		?>
 	</div>
