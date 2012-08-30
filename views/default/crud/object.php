@@ -129,7 +129,7 @@ HTML;
 	if ($children_count != 0) {
 		$text = elgg_echo("$crud_object->module:$crud_object->crud_type:children") . " ($children_count)";
 		$children_link = elgg_view('output/url', array(
-			'href' => $crud->getURL() . '#crud-comments',
+			'href' => $crud->getURL() . '#crud-children',
 			'text' => $text,
 		));
 	} else {
