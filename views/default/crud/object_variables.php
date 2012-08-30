@@ -5,6 +5,11 @@
 
 	$variables = elgg_get_config($object_subtype);
 	foreach ($variables as $name => $type) {
+		
+		if (is_array($type)) {
+			$type = $type['output_type'];
+		}
+		
 		$value = $entity->$name;
 		
 		if (in_array($name, array('title', 'description', 'access_id'))) {

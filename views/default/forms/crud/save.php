@@ -16,6 +16,11 @@ $parent_guid = $vars['parent_guid'];
 $variables = elgg_get_config($crud_type);
 
 foreach ($variables as $name => $type) {
+	
+	if (is_array($type)) {
+		$type = $type['input_type'];
+	}
+	
 	echo '<div>';
 	if ($type != 'hidden') {
 		echo "<label>" . elgg_echo("$crud->module:$crud->crud_type:$name") . "</label>";
