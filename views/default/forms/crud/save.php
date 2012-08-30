@@ -16,22 +16,19 @@ $parent_guid = $vars['parent_guid'];
 $variables = elgg_get_config($crud_type);
 
 foreach ($variables as $name => $type) {
-?>
-<div>
-	<label><?php echo elgg_echo("$crud->module:$crud->crud_type:$name") ?></label>
-	<?php
+	echo '<div>';
+	if ($type != 'hidden') {
+		echo "<label>" . elgg_echo("$crud->module:$crud->crud_type:$name") . "</label>";
 		if ($type != 'longtext') {
 			echo '<br />';
 		}
-	?>
-	<?php echo elgg_view("input/$type", array(
-			'crud' => $crud,
-			'name' => $name,
-			'value' => $vars[$name],
-		));
-	?>
-</div>
-<?php
+	}
+	echo elgg_view("input/$type", array(
+		'crud' => $crud,
+		'name' => $name,
+		'value' => $vars[$name],
+	));
+	echo '</div>';
 }
 
 $action_buttons = '';
