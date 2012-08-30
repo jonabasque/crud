@@ -218,6 +218,7 @@ function crud_handle_view_page($crud, $guid) {
 		elgg_set_page_owner_guid($guid);
 		elgg_register_title_button($crud->children_type);
 	}
+	elgg_trigger_plugin_hook("crud:$crud_type:view_buttons", 'view_buttons', array('crud'=>$crud, 'type'=>$crud_type, 'entity'=>$entity), $location);
 
 	elgg_set_page_owner_guid($entity->container_guid);
 
