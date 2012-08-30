@@ -145,9 +145,10 @@ HTML;
 	$params = array(
 		'entity' => $crud,
 		'metadata' => $metadata,
-		'subtitle' => $subtitle,
 		'tags' => false,
 	);
+
+	// Format title
 	if (empty($title)) {
 		$title_link = elgg_view('output/url', array(
 			'href' => $crud->getURL(),
@@ -155,6 +156,21 @@ HTML;
 		));
 		$params['title'] = $title_link;
 	}
+	// Format parent link
+	if (elgg_get_context() == $crud_object->crud_type && $crud->parent_guid) {
+		$parent = get_entity($crud->parent_guid);
+		$parent_title = $parent->title;
+		if (empty($parent_title)) {
+			$parent_title_link = elgg_view('output/url', array(
+                        'href' => $parent->getURL(),
+                        'text' => date(elgg_echo('crud:date_format'), $parent->date),
+   	             ));
+		}
+		$subtitle = elgg_echo("$crud_object->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
+	}
+	$params['subtitle'] = $subtitle;
+	$params['content'] = $content;
+
 	$params = $params + $vars;
 	$list_body = elgg_view('object/elements/summary', $params);
 
