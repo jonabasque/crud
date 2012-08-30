@@ -83,23 +83,36 @@ function crud_page_handler($page) {
 	return true;
 }
 
-function crud_register_type($name) {
+function crud_register_type($name, $variables) {
 	global $CRUD_HANDLERS;
-	$object = new CrudObject($name);
-	$CRUD_HANDLERS[$name] = $object;
+	if (isset($CRUD_HANDLERS[$name])) {
+		$object = $CRUD_HANDLERS[$name];
+	}
+	else {
+		$object = new CrudObject($name);
+		$CRUD_HANDLERS[$name] = $object;
+	}
 
-	// Register for search.
-	elgg_register_entity_type('object', $name);
+	$prev_variables = elgg_get_config($name);
+	if (!empty($prev_variables)) {
+		$variables = array_merge($prev_variables, $variables);
+	}
+	elgg_set_config($name, $variables);
 
-	// routing of urls
-	elgg_register_page_handler($name, 'crud_page_handler');
+	if (empty($prev_variables)) {
+		// Register for search.
+		elgg_register_entity_type('object', $name);
 
-	// override the default url to view a crud object
-	elgg_register_entity_url_handler('object', $name, 'crud_url_handler');
+		// routing of urls
+		elgg_register_page_handler($name, 'crud_page_handler');
 
-	$action_path = elgg_get_plugins_path() . 'crud/actions/crud';
-	elgg_register_action("$name/save", "$action_path/save.php");
-	elgg_register_action("$name/delete", "$action_path/delete.php");
+		// override the default url to view a crud object
+		elgg_register_entity_url_handler('object', $name, 'crud_url_handler');
+
+		$action_path = elgg_get_plugins_path() . 'crud/actions/crud';
+		elgg_register_action("$name/save", "$action_path/save.php");
+		elgg_register_action("$name/delete", "$action_path/delete.php");
+	}
 	return $object;
 }
 
