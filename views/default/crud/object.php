@@ -32,7 +32,7 @@ if ($crud_object->icon_var) {
 		$status = 'new';
 	}
 
-	$icon = elgg_view('output/img', array('src'=>"/mod/$crud_object->module/graphics/$crud_object->crud_type-icons/$status.png"));
+	$icon = elgg_view('output/img', array('src'=>"/mod/$crud_object->module/graphics/$crud_object->crud_type-icons/$status.png", 'title' => elgg_echo("$crud_object->module:$object_subtype:$status")));
 }
 else {
 	$icon = '';
