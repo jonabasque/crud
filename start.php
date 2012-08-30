@@ -8,8 +8,6 @@
 
 elgg_register_event_handler('init', 'system', 'crud_init');
 
-global $CRUD_HANDLERS;
-
 /**
  * Format and return the URL for crud object.
  *
@@ -84,13 +82,13 @@ function crud_page_handler($page) {
 }
 
 function crud_register_type($name, $variables) {
-	global $CRUD_HANDLERS;
-	if (isset($CRUD_HANDLERS[$name])) {
-		$object = $CRUD_HANDLERS[$name];
+	global $CONFIG;
+	
+	if (isset($CONFIG->crud->handlers[$name])) {
+		$object = $CONFIG->crud->handlers[$name];
 	}
 	else {
-		$object = new CrudObject($name);
-		$CRUD_HANDLERS[$name] = $object;
+		$object = $CONFIG->crud->handlers[$name] = new CrudObject($name);
 	}
 
 	$prev_variables = elgg_get_config($name);
@@ -117,19 +115,21 @@ function crud_register_type($name, $variables) {
 }
 
 function crud_get_handler($name) {
-	global $CRUD_HANDLERS;
-	return $CRUD_HANDLERS[$name];
+	global $CONFIG;
+	return $CONFIG->crud->handlers[$name];
 }
 
 /**
  * Init crud plugin.
  */
 function crud_init() {
-	global $CRUD_HANDLERS;
+	global $CONFIG;
+	$CONFIG->crud = new stdClass();
+	$CONFIG->crud->handlers = array();
+	
 	elgg_register_library('elgg:crud', elgg_get_plugins_path() . 'crud/lib/crud.php');
 	// add to the main css
 	elgg_extend_view('css/elgg', 'crud/css');
-	$CRUD_HANDLERS = array();
 
 	// register actions
 	$action_path = elgg_get_plugins_path() . 'crud/actions/crud';
