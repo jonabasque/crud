@@ -173,11 +173,12 @@ HTML;
 		$parent = get_entity($crud->parent_guid);
 		$parent_title = $parent->title;
 		if (empty($parent_title)) {
-			$parent_title_link = elgg_view('output/url', array(
-                        'href' => $parent->getURL(),
-                        'text' => date(elgg_echo('crud:date_format'), $parent->date),
-   	             ));
+			$parent_title = date(elgg_echo('crud:date_format'), $parent->date);
 		}
+		$parent_title_link = elgg_view('output/url', array(
+			'href' => $parent->getURL(),
+			'text' => $parent_title,
+	        ));
 		$subtitle = elgg_echo("$crud_object->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
 	}
 	$params['subtitle'] = $subtitle;
