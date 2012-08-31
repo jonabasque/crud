@@ -108,19 +108,22 @@ if ($full || $expanded) {
 		$numchildren = crud_count_children($crud);
 		if ($crud_object->embed == 'firstchild' && $numchildren == 1) {
 			$child = crud_get_embedded_child($crud);
-			$children_content = elgg_view_entity($child, array('full_view'=>true));
+			$title = elgg_echo("$crud_object->module:$crud_object->crud_type:child");
+			$content = elgg_view_entity($child, array('full_view'=>true));
 		}
 		else {
 			$children = crud_list_children($crud);
 
-			$children_content = '<div class="crud-children">';
-			$children_content .= '<h3><b>'.elgg_echo("$crud_object->module:$crud_object->crud_type:children").'</b></h3>';
+			$title = elgg_echo("$crud_object->module:$crud_object->crud_type:children");
 			if (!empty($children))
-				$children_content .= $children;
+				$content .= $children;
 			else
-				$children_content .= elgg_echo("crud:$object_subtype:nochildren");
-			$children_content .= '</div>';
+				$content .= elgg_echo("crud:$object_subtype:nochildren");
 		}
+		$children_content = '<div class="crud-children">';
+		$children_content .= "<h3><b>$title</b></h3>";
+		$children_content .= $content;
+		$children_content .= '</div>';
 	}
 
 
