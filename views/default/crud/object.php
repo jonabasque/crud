@@ -11,54 +11,54 @@
 elgg_load_library('elgg:crud');
 
 $full = elgg_extract('full_view', $vars, FALSE);
-$crud = elgg_extract('entity', $vars, FALSE);
+$entity = elgg_extract('entity', $vars, FALSE);
 
-$object_subtype = $crud->getSubtype();
+$object_subtype = $entity->getSubtype();
 
 $expanded_text = get_input($object_subtype.'_expanded');
 if ($expanded_text == 'yes') {
 	$expanded = true;
 }
 
-$crud_object = $crud->getCrudTemplate();
-$child_subtype = $crud_object->children_type;
+$crud = $entity->getCrudTemplate();
+$child_subtype = $crud->children_type;
 
-if (!$crud) {
+if (!$entity) {
 	return TRUE;
 }
 
-$icon = elgg_view_entity_icon($crud, 'tiny');
+$icon = elgg_view_entity_icon($entity, 'tiny');
 
-if ($crud_object->icon_var) {
-	$var_name = $crud_object->icon_var;
-	$status = $crud->$var_name;
+if ($crud->icon_var) {
+	$var_name = $crud->icon_var;
+	$status = $entity->$var_name;
 
 	if(empty($status)) {
 		$status = 'new';
 	}
 
-	$icon = elgg_view('output/img', array('src'=>"/mod/$crud_object->module/graphics/$crud_object->crud_type-icons/$status.png", 'title' => elgg_echo("$crud_object->module:$object_subtype:$status")));
+	$icon = elgg_view('output/img', array('src'=>"/mod/$crud->module/graphics/$crud->crud_type-icons/$status.png", 'title' => elgg_echo("$crud->module:$object_subtype:$status")));
 }
 else {
 	$icon = '';
 }
 
-$owner = get_entity($crud->owner_guid);
+$owner = get_entity($entity->owner_guid);
 $owner_link = elgg_view('output/url', array(
 	'href' => "crud/owner/$owner->username",
 	'text' => $owner->name,
 ));
 
-$date = elgg_view_friendly_time($crud->time_status_changed);
+$date = elgg_view_friendly_time($entity->time_status_changed);
 //$strapline = elgg_echo("crud:strapline:$status", array($date, $owner_link));
-$tags = elgg_view('output/tags', array('tags' => $crud->tags));
+$tags = elgg_view('output/tags', array('tags' => $entity->tags));
 
-$comments_count = $crud->countComments();
+$comments_count = $entity->countComments();
 //only display if there are commments
 if ($comments_count != 0) {
 	$text = elgg_echo("comments") . " ($comments_count)";
 	$comments_link = elgg_view('output/url', array(
-		'href' => $crud->getURL() . '#crud-comments',
+		'href' => $entity->getURL() . '#crud-comments',
 		'text' => $text,
 	));
 } else {
@@ -81,17 +81,17 @@ if (elgg_in_context('widgets')) {
 
 if ($full || $expanded) {
 	//$icon = '';
-	$body = elgg_view($crud_object->crud_type . '/profile_extra', $vars);
-	$body .= elgg_view('output/longtext', array('value' => $crud->description));
+	$body = elgg_view($crud->crud_type . '/profile_extra', $vars);
+	$body .= elgg_view('output/longtext', array('value' => $entity->description));
 
 	$params = array(
-		'entity' => $crud,
+		'entity' => $entity,
 		'title' => false,
 		'metadata' => $metadata,
 		'subtitle' => '',
 		'tags' => false,
 	);
-	$variables = elgg_view('crud/object_variables', array('entity'=>$crud));
+	$variables = elgg_view('crud/object_variables', array('entity'=>$entity));
 
 	$params = $params;
 	$list_body = elgg_view('object/elements/summary', $params);
@@ -100,21 +100,21 @@ if ($full || $expanded) {
 	$info = elgg_view_image_block($icon, $list_body);
 
 	// Owner
-	$body .= "<b>".elgg_echo("$crud_object->module:$crud_object->crud_type:owner", array($owner_link))."</b>";
+	$body .= "<b>".elgg_echo("$crud->module:$crud->crud_type:owner", array($owner_link))."</b>";
 	$body .= $variables;
 
 	// Children
 	if (!empty($child_subtype)) {
-		$numchildren = crud_count_children($crud);
-		if ($crud_object->embed == 'firstchild' && $numchildren == 1) {
-			$child = crud_get_embedded_child($crud);
-			$title = elgg_echo("$crud_object->module:$crud_object->crud_type:child");
+		$numchildren = crud_count_children($entity);
+		if ($crud->embed == 'firstchild' && $numchildren == 1) {
+			$child = crud_get_embedded_child($entity);
+			$title = elgg_echo("$crud->module:$crud->crud_type:child");
 			$content = elgg_view_entity($child, array('full_view'=>true));
 		}
 		else {
-			$children = crud_list_children($crud);
+			$children = crud_list_children($entity);
 
-			$title = elgg_echo("$crud_object->module:$crud_object->crud_type:children");
+			$title = elgg_echo("$crud->module:$crud->crud_type:children");
 			if (!empty($children))
 				$content .= $children;
 			else
@@ -135,12 +135,12 @@ HTML;
 
 } else {
 	// brief view
-	$children_count = crud_count_children($crud);
+	$children_count = crud_count_children($entity);
 	//only display if there are commments
 	if ($children_count != 0) {
-		$text = elgg_echo("$crud_object->module:$crud_object->crud_type:children") . " ($children_count)";
+		$text = elgg_echo("$crud->module:$crud->crud_type:children") . " ($children_count)";
 		$children_link = elgg_view('output/url', array(
-			'href' => $crud->getURL() . '#crud-children',
+			'href' => $entity->getURL() . '#crud-children',
 			'text' => $text,
 		));
 	} else {
@@ -148,29 +148,29 @@ HTML;
 	}
 
 	$subtitle = $children_link . "" . $subtitle; 
-	$subtitle .= elgg_view($crud_object->crud_type . '/profile_extra', $vars);
+	$subtitle .= elgg_view($crud->crud_type . '/profile_extra', $vars);
 
 
-	$excerpt = elgg_get_excerpt($crud->description);
+	$excerpt = elgg_get_excerpt($entity->description);
 
 	$params = array(
-		'entity' => $crud,
+		'entity' => $entity,
 		'metadata' => $metadata,
 		'tags' => false,
 	);
 
 
 	// Format title
-	$title_link = $crud->getTitleLink();
+	$title_link = $entity->getTitleLink();
 
 	$params['title'] = $title_link;
 
 	// Format parent link
-	if (elgg_get_context() == $crud_object->crud_type && $crud->parent_guid) {
-		$parent = get_entity($crud->parent_guid);
+	if (elgg_get_context() == $crud->crud_type && $entity->parent_guid) {
+		$parent = get_entity($entity->parent_guid);
 		$parent_title = $parent->getTitleLink();
 
-		$subtitle = elgg_echo("$crud_object->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
+		$subtitle = elgg_echo("$crud->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
 	}
 	$params['subtitle'] = $subtitle;
 	//$params['content'] = $content;

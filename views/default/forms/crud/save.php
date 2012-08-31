@@ -7,17 +7,17 @@
 
 $crud = $vars['crud'];
 $crud_type = $crud->crud_type;
-$object = get_entity($vars['guid']);
-$vars['entity'] = $object;
+$entity = get_entity($vars['guid']);
+$vars['entity'] = $entity;
 
 $container_guid = $vars['container_guid'];
 $parent_guid = $vars['parent_guid'];
 
 $fields = elgg_get_config($crud_type);
 
-if ($crud->embed && $object) {
-	$num_children = crud_count_children($object);
-	$embedded_child = crud_get_embedded_child($object);
+if ($crud->embed && $entity) {
+	$num_children = crud_count_children($entity);
+	$embedded_child = crud_get_embedded_child($entity);
 }
 
 foreach ($fields as $name => $field) {
