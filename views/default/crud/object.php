@@ -29,8 +29,9 @@ if (!$entity) {
 	return TRUE;
 }
 
-$icon = elgg_view_entity_icon($entity, 'tiny');
+// $icon = elgg_view_entity_icon($entity, 'tiny');
 
+// Override icon completely for now
 if ($crud->icon_var) {
 	$var_name = $crud->icon_var;
 	$status = $entity->$var_name;
@@ -157,6 +158,7 @@ HTML;
 	$params = array(
 		'entity' => $entity,
 		'metadata' => $metadata,
+		'content' => $excerpt,
 		'tags' => false,
 	);
 
@@ -174,11 +176,9 @@ HTML;
 		$subtitle = elgg_echo("$crud->crud_type:childof", array($parent_title))."<br />".$subtitle;
 	}
 	$params['subtitle'] = $subtitle;
-	//$params['content'] = $content;
 
 	$params = $params + $vars;
 	$list_body = elgg_view('object/elements/summary', $params);
 
-	#echo $list_body;
 	echo elgg_view_image_block($icon, $list_body);
 }
