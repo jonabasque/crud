@@ -6,6 +6,7 @@
 /**
  * List crud objects in a group
  *
+ * @param CrudTemplate $crud Crud template object
  * @param int $guid Group entity GUID
  */
 function crud_handle_list_page($crud, $guid) {
@@ -67,6 +68,7 @@ function crud_handle_list_page($crud, $guid) {
 /**
  * Edit or add a crud object
  *
+ * @param CrudTemplate $crud Crud template object
  * @param string $type 'add' or 'edit'
  * @param int    $guid GUID of group or crud object
  */
@@ -156,6 +158,13 @@ function crud_handle_edit_page($crud, $type, $guid) {
 	echo elgg_view_page($title, $body);
 }
 
+/**
+ * Push breadcrumbs from the given crud object going up in the parent hirarchy
+ *
+ * @param ElggObject $last Ending object
+ * @param ElggObject $entity Current object
+ * @param CrudTemplate $crud Crud template object
+ */
 function crud_push_breadcrumb($last, $entity, $crud = NULL) {
 	if (empty($crud)) {
 		$crud = crud_get_handler($entity->getSubtype());
@@ -183,6 +192,7 @@ function crud_push_breadcrumb($last, $entity, $crud = NULL) {
 /**
  * View a crud object
  *
+ * @param CrudTemplate $crud Crud template object
  * @param int $guid GUID of a crud object
  */
 function crud_handle_view_page($crud, $guid) {
@@ -243,6 +253,7 @@ function crud_handle_view_page($crud, $guid) {
 /**
  * Prepare crud object form variables
  *
+ * @param CrudTemplate $crud Crud template object
  * @param ElggObject $object Crud object if editing
  * @return array
  */
@@ -295,6 +306,11 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 	return $values;
 }
 
+/**
+ * List children for given entity
+ *
+ * @param entity $entity Entity to operate on
+ */
 function crud_list_children($entity) {
 	$crud = crud_get_handler($entity->getSubtype());
 	$child_subtype = $crud->children_type;
@@ -312,6 +328,11 @@ function crud_list_children($entity) {
 	return $children;
 }
 
+/**
+ * Get children for given entity
+ *
+ * @param entity $entity Entity to operate on
+ */
 function crud_get_children($entity) {
 	$crud = crud_get_handler($entity->getSubtype());
 	$child_subtype = $crud->children_type;
@@ -328,6 +349,12 @@ function crud_get_children($entity) {
 	$children = elgg_get_entities_from_metadata($child_options);
 	return $children;
 }
+
+/**
+ * Count children for given entity
+ *
+ * @param entity $entity Entity to operate on
+ */
 function crud_count_children($entity) {
 	$crud = crud_get_handler($entity->getSubtype());
 	$child_subtype = $crud->children_type;
@@ -345,16 +372,14 @@ function crud_count_children($entity) {
 	return $children;
 }
 
-function crud_format_title($entity) {
-	$title = $entity->title;
-
-	// Format title
-	if (empty($title)) {
-		$title = date(elgg_echo('crud:date_format'), $entity->date);
-	}
-	return $title;
-}
-
+/**
+ * Get the only embedded child for an entity.
+ *
+ * note: if there are more than one children, then nothing will be
+ * returned.
+ *
+ * @param entity $entity Entity to operate on
+ */
 function crud_get_embedded_child($entity) {
 	$embedded_children = crud_get_children($entity);
 	if (!empty($embedded_children)) {
