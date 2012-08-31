@@ -61,6 +61,7 @@ function crud_page_handler($page) {
 
 	switch ($page[0]) {
 		case 'owner':
+		case 'group':
 			crud_handle_list_page($crud_handler, $page[1]);
 			break;
 		case 'add':
@@ -82,14 +83,7 @@ function crud_page_handler($page) {
 }
 
 function crud_register_type($name, $variables) {
-	global $CONFIG;
-	
-	if (isset($CONFIG->crud->handlers[$name])) {
-		$object = $CONFIG->crud->handlers[$name];
-	}
-	else {
-		$object = $CONFIG->crud->handlers[$name] = new CrudObject($name);
-	}
+	$object = crud_get_handler($name);
 
 	$prev_variables = elgg_get_config($name);
 	if (!empty($prev_variables)) {
@@ -116,7 +110,36 @@ function crud_register_type($name, $variables) {
 
 function crud_get_handler($name) {
 	global $CONFIG;
-	return $CONFIG->crud->handlers[$name];
+	if (isset($CONFIG->crud->handlers[$name])) {
+		return $CONFIG->crud->handlers[$name];
+	}
+	return $CONFIG->crud->handlers[$name] = new CrudObject($name);
+}
+
+function crud_owner_block_menu($hook, $type, $return, $params) {
+	global $CONFIG;
+	
+	foreach($CONFIG->crud->handlers as $handler_name => $handler) {
+		if (!$handler->owner_block) {
+			continue;
+		}
+		
+		if ($handler->owner_block != 'group' && elgg_instanceof($params['entity'], 'user')) {
+			$url = "$handler_name/owner/{$params['entity']->username}";
+			$item = new ElggMenuItem($handler_name, elgg_echo($handler_name), $url);
+			$return[] = $item;
+		} elseif ($handler->owner_block != 'user') {
+			$enable = "{$handler->module}_enable";
+			if ($params['entity']->$enable == "yes") {
+				$owner_label = ($handler->owner_block == 'group') ? 'owner' : 'group';
+				$url = "$handler_name/$owner_label/{$params['entity']->guid}/all";
+				$item = new ElggMenuItem($handler_name, elgg_echo("$handler_name:group"), $url);
+				$return[] = $item;
+			}
+		}
+	}
+
+	return $return;
 }
 
 /**
@@ -136,6 +159,7 @@ function crud_init() {
 	elgg_register_action('crud/save', "$action_path/save.php");
 	elgg_register_action('crud/delete', "$action_path/delete.php");
 
+	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'crud_owner_block_menu');
 
 }
 
