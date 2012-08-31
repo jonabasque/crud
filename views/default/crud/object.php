@@ -20,7 +20,7 @@ if ($expanded_text == 'yes') {
 	$expanded = true;
 }
 
-$crud_object = crud_get_handler($object_subtype);
+$crud_object = $crud->getCrudTemplate();
 $child_subtype = $crud_object->children_type;
 
 if (!$crud) {

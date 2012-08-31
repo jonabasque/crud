@@ -82,7 +82,9 @@ function crud_page_handler($page) {
 	return true;
 }
 
-function crud_register_type($name, $variables) {
+function crud_register_type($name, $variables, $class=NULL) {
+	crud_register_subtype($name, $class);
+
 	$object = crud_get_handler($name);
 
 	$prev_variables = elgg_get_config($name);
@@ -114,7 +116,7 @@ function crud_get_handler($name) {
 	if (isset($CONFIG->crud->handlers[$name])) {
 		return $CONFIG->crud->handlers[$name];
 	}
-	return $CONFIG->crud->handlers[$name] = new CrudObject($name);
+	return $CONFIG->crud->handlers[$name] = new CrudTemplate($name);
 }
 
 function crud_owner_block_menu($hook, $type, $return, $params) {
@@ -162,5 +164,17 @@ function crud_init() {
 
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'crud_owner_block_menu');
 
+}
+
+function crud_register_subtype($name, $class_name=NULL) {
+	if (empty($class_name))
+		$class_name = "CrudObject";
+	if (get_subtype_id('object', $name)) {
+		if (get_subtype_class('object', $name) != $class_name) {
+			update_subtype('object', $name, $class_name);
+		}
+	} else {
+		add_subtype('object', $name, $class_name);
+	}
 }
 
