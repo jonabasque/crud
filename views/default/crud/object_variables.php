@@ -7,7 +7,7 @@
 	foreach ($variables as $name => $type) {
 		
 		if (is_array($type)) {
-			$type = $type['output_type'];
+			$type = elgg_extract('output_view', $type, elgg_extract('type', $type));
 		}
 		
 		$value = $entity->$name;

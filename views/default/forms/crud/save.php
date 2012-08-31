@@ -27,11 +27,14 @@ foreach ($fields as $name => $field) {
 		$default_value = "";
 		$field = array();
 	} else {
-		$type = $field['input_type'];
-		$default_value = $field['default_value'];
+		$type = elgg_extract('input_view', $field, elgg_extract('type', $field));
+		$default_value = elgg_extract('default_value', $field, '');
 		if (isset($field['embedded'])) {
 			$embedded = $field['embedded'];
 		}
+		unset($field['input_view']);
+		unset($field['output_view']);
+		unset($field['default_value']);
 	}
 	
 	echo '<div>';

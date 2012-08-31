@@ -120,18 +120,18 @@ function crud_owner_block_menu($hook, $type, $return, $params) {
 	global $CONFIG;
 	
 	foreach($CONFIG->crud->handlers as $handler_name => $handler) {
-		if (!$handler->owner_block) {
+		if (!$handler->owner_menu) {
 			continue;
 		}
 		
-		if ($handler->owner_block != 'group' && elgg_instanceof($params['entity'], 'user')) {
+		if ($handler->owner_menu != 'group' && elgg_instanceof($params['entity'], 'user')) {
 			$url = "$handler_name/owner/{$params['entity']->username}";
 			$item = new ElggMenuItem($handler_name, elgg_echo($handler_name), $url);
 			$return[] = $item;
-		} elseif ($handler->owner_block != 'user') {
+		} elseif ($handler->owner_menu != 'user') {
 			$enable = "{$handler->module}_enable";
 			if ($params['entity']->$enable == "yes") {
-				$owner_label = ($handler->owner_block == 'group') ? 'owner' : 'group';
+				$owner_label = ($handler->owner_menu == 'group') ? 'owner' : 'group';
 				$url = "$handler_name/$owner_label/{$params['entity']->guid}/all";
 				$item = new ElggMenuItem($handler_name, elgg_echo("$handler_name:group"), $url);
 				$return[] = $item;
