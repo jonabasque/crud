@@ -203,7 +203,7 @@ function crud_handle_view_page($crud, $guid) {
 	$crud_type = $crud->crud_type;
 
 	$entity = get_entity($guid);
-	$parent = get_entity($entity->parent_guid);
+	$parent = $entity->getParentEntity();
 	if ($parent instanceof ElggGroup) {
 		$group = $parent;
 		$parent = NULL;
@@ -306,86 +306,4 @@ function crud_prepare_form_vars($crud, $object = NULL, $parent = NULL) {
 	return $values;
 }
 
-/**
- * List children for given entity
- *
- * @param entity $entity Entity to operate on
- */
-function crud_list_children($entity) {
-	$crud = crud_get_handler($entity->getSubtype());
-	$child_subtype = $crud->children_type;
-	$child_options = array('full_view' => FALSE,
-			'types' => 'object',
-			'subtypes' => $child_subtype,
-			'limit' => 10,
-			'metadata_name_value_pairs' => array(
-				array('name' => 'parent_guid',
-					'value' => $entity->guid)
-				),
-			);
-
-	$children = elgg_list_entities_from_metadata($child_options);
-	return $children;
-}
-
-/**
- * Get children for given entity
- *
- * @param entity $entity Entity to operate on
- */
-function crud_get_children($entity) {
-	$crud = crud_get_handler($entity->getSubtype());
-	$child_subtype = $crud->children_type;
-	$child_options = array('full_view' => FALSE,
-			'types' => 'object',
-			'subtypes' => $child_subtype,
-			'limit' => 10,
-			'metadata_name_value_pairs' => array(
-				array('name' => 'parent_guid',
-					'value' => $entity->guid)
-				)
-			);
-
-	$children = elgg_get_entities_from_metadata($child_options);
-	return $children;
-}
-
-/**
- * Count children for given entity
- *
- * @param entity $entity Entity to operate on
- */
-function crud_count_children($entity) {
-	$crud = crud_get_handler($entity->getSubtype());
-	$child_subtype = $crud->children_type;
-	$child_options = array('full_view' => FALSE,
-			'types' => 'object',
-			'subtypes' => $child_subtype,
-			'count' => TRUE,
-			'metadata_name_value_pairs' => array(
-				array('name' => 'parent_guid',
-					'value' => $entity->guid)
-				)
-			);
-
-	$children = elgg_get_entities_from_metadata($child_options);
-	return $children;
-}
-
-/**
- * Get the only embedded child for an entity.
- *
- * note: if there are more than one children, then nothing will be
- * returned.
- *
- * @param entity $entity Entity to operate on
- */
-function crud_get_embedded_child($entity) {
-	$embedded_children = crud_get_children($entity);
-	if (!empty($embedded_children)) {
-		if (count($embedded_children) == 1)
-			$embedded_child = $embedded_children[0];
-	}
-	return $embedded_child;
-}
 

@@ -16,8 +16,8 @@ $parent_guid = $vars['parent_guid'];
 $fields = elgg_get_config($crud_type);
 
 if ($crud->embed && $entity) {
-	$num_children = crud_count_children($entity);
-	$embedded_child = crud_get_embedded_child($entity);
+	$num_children = $entity->getChildren(TRUE);
+	$embedded_child = $entity->getEmbeddedChild();
 }
 
 foreach ($fields as $name => $field) {

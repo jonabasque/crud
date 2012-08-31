@@ -105,14 +105,14 @@ if ($full || $expanded) {
 
 	// Children
 	if (!empty($child_subtype)) {
-		$numchildren = crud_count_children($entity);
+		$numchildren = $entity->getChildren(TRUE);;
 		if ($crud->embed == 'firstchild' && $numchildren == 1) {
-			$child = crud_get_embedded_child($entity);
+			$child = $entity->getEmbeddedChild();
 			$title = elgg_echo("$crud->module:$crud->crud_type:child");
 			$content = elgg_view_entity($child, array('full_view'=>true));
 		}
 		else {
-			$children = crud_list_children($entity);
+			$children = $entity->listChildren();
 
 			$title = elgg_echo("$crud->module:$crud->crud_type:children");
 			if (!empty($children))
@@ -135,7 +135,7 @@ HTML;
 
 } else {
 	// brief view
-	$children_count = crud_count_children($entity);
+	$children_count = $entity->getChildren(TRUE);
 	//only display if there are commments
 	if ($children_count != 0) {
 		$text = elgg_echo("$crud->module:$crud->crud_type:children") . " ($children_count)";

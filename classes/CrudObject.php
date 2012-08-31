@@ -53,6 +53,68 @@ class CrudObject extends ElggObject  {
 		return $title_link;
 	}
 
+	/**
+	 * List children for given entity
+	 *
+	 * @param entity $entity Entity to operate on
+	 */
+	function listChildren() {
+		$crud = $this->getCrudTemplate();
+		$child_subtype = $crud->children_type;
+		$child_options = array('full_view' => FALSE,
+				'types' => 'object',
+				'subtypes' => $child_subtype,
+				'limit' => 10,
+				'metadata_name_value_pairs' => array(
+					array('name' => 'parent_guid',
+						'value' => $this->guid)
+					),
+				);
+
+		$children = elgg_list_entities_from_metadata($child_options);
+		return $children;
+	}
+
+	/**
+	 * Get children for given entity
+	 */
+	function getChildren($count=FALSE) {
+		$limit = 10;
+		if ($count)
+			$limit = 0;
+		$crud = $this->getCrudTemplate();
+		$child_subtype = $crud->children_type;
+		$child_options = array('full_view' => FALSE,
+				'types' => 'object',
+				'subtypes' => $child_subtype,
+				'limit' => $limit,
+				'count' => $count,
+				'metadata_name_value_pairs' => array(
+					array('name' => 'parent_guid',
+						'value' => $this->guid)
+					)
+				);
+
+		$children = elgg_get_entities_from_metadata($child_options);
+		return $children;
+	}
+
+
+	/**
+	 * Get the only embedded child for an entity.
+	 *
+	 * note: if there are more than one children, then nothing will be
+	 * returned.
+	 */
+	function getEmbeddedChild() {
+		$embedded_children = $this->getChildren();
+		if (!empty($embedded_children)) {
+			if (count($embedded_children) == 1)
+				$embedded_child = $embedded_children[0];
+		}
+		return $embedded_child;
+	}
+
 }
 
 
