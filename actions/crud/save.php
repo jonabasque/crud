@@ -5,14 +5,28 @@
  * @package Assemblies
  */
 
+elgg_load_library('elgg:crud');
+
 $crud_type = get_input('crud');
+$embed_guid = get_input('embed');
 $crud = crud_get_handler($crud_type);
 
 $msg_prefix = $crud->module.":$crud_type";
 
 $variables = elgg_get_config($crud_type);
 $input = array();
-foreach ($variables as $name => $type) {
+$embedded_variables = array();
+
+foreach ($variables as $name => $field) {
+	if (!is_array($field)) {
+		$type = $field;
+	} else {
+		$type = $field['input_type'];
+		if (!empty($field['embedded'])) {
+			$embedded_variables[] = $name;
+		}
+	}
+
 	$input[$name] = get_input($name);
 	if ($name == 'title') {
 		$input[$name] = strip_tags($input[$name]);
@@ -50,10 +64,42 @@ if ($entity_guid) {
 	$new_entity = true;
 }
 
+$embedded_child = NULL;
+if ($embed_guid && !$new_entity) {
+	$embedded_child = get_entity($embed_guid);
+	if ($embedded_child->parent_guid != $entity->guid) {
+		register_error(elgg_echo($msg_prefix.':error:incoherency'));
+		forward(REFERER);
+	}
+}
+if (!$new_entity && empty($embedded_child)) {
+	$embedded_children = crud_count_children($entity);
+	if ($embedded_children > 1) {
+		$embedded_variables = array();
+	}
+	else {
+		$embedded_child = crud_get_embedded_child($entity);
+	}
+}
+
 if (sizeof($input) > 0) {
 	foreach ($input as $name => $value) {
-		$entity->$name = $value;
+		if (in_array($name, $embedded_variables)) {
+			// embedded variable
+			if (!$embedded_child) {
+				$embedded_child = new ElggObject();
+				$embedded_child->subtype = $crud->children_type;
+				$embedded_child->title = $input['title'];
+			}
+			$name = $variables[$name]['embedded'];
+			$embedded_child->$name = $value;
+		}
+		else {
+			// not embedded
+			$entity->$name = $value;
+		}
 	}
+
 }
 
 // set parent if set
@@ -65,6 +111,12 @@ if (!empty($parent_guid)) {
 $entity->container_guid = $container_guid;
 
 if ($entity->save()) {
+	if ($embedded_child) {
+		$embedded_child->parent_guid = $entity->guid;
+		$embedded_child->access_id = $entity->access_id;
+		$embedded_child->container_guid = $container_guid;
+		$embedded_child->save();
+	}
 
 	elgg_clear_sticky_form($crud_type);
 

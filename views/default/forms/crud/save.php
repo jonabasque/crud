@@ -15,8 +15,13 @@ $parent_guid = $vars['parent_guid'];
 
 $fields = elgg_get_config($crud_type);
 
+if ($crud->embed) {
+	$embedded_child = crud_get_embedded_child($object);
+}
+
 foreach ($fields as $name => $field) {
 	
+	$embedded = false;
 	if (!is_array($field)) {
 		$type = $field;
 		$default_value = "";
@@ -24,6 +29,9 @@ foreach ($fields as $name => $field) {
 	} else {
 		$type = $field['input_type'];
 		$default_value = $field['default_value'];
+		if (isset($field['embedded'])) {
+			$embedded = $field['embedded'];
+		}
 	}
 	
 	echo '<div>';
@@ -33,10 +41,14 @@ foreach ($fields as $name => $field) {
 			echo '<br />';
 		}
 	}
+	$value = $vars[$name];
+	if ($embedded && $embedded_child) {
+		$value = $embedded_child->$embedded;
+	}
 	echo elgg_view("input/$type", array_merge($field, array(
 		'crud' => $crud,
 		'name' => $name,
-		'value' => $vars[$name] ? $vars[$name] : $default_value,
+		'value' => $value ? $value : $default_value,
 	)));
 	echo '</div>';
 }
@@ -67,7 +79,10 @@ if (!empty($parent_guid)) {
 }
 $guid_input = elgg_view('input/hidden', array('name' => 'guid', 'value' => $vars['guid']));
 $crud_input = elgg_view('input/hidden', array('name' => 'crud', 'value' => $crud_type));
-
+if ($embedded_child) {
+	$embed_input = elgg_view('input/hidden', array('name' => 'embed', 'value' => $embedded_child->guid));
+}
+		
 echo <<<___HTML
 
 <div class="elgg-foot">
@@ -75,6 +90,7 @@ echo <<<___HTML
 	$container_guid_input
 	$parent_guid_input
 	$crud_input
+	$embed_input
 
 	$action_buttons
 </div>

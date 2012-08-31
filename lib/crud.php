@@ -344,3 +344,23 @@ function crud_count_children($entity) {
 	$children = elgg_get_entities_from_metadata($child_options);
 	return $children;
 }
+
+function crud_format_title($entity) {
+	$title = $entity->title;
+
+	// Format title
+	if (empty($title)) {
+		$title = date(elgg_echo('crud:date_format'), $entity->date);
+	}
+	return $title;
+}
+
+function crud_get_embedded_child($entity) {
+	$embedded_children = crud_get_children($entity);
+	if (!empty($embedded_children)) {
+		if (count($embedded_children) == 1)
+			$embedded_child = $embedded_children[0];
+	}
+	return $embedded_child;
+}
+

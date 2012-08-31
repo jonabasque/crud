@@ -15,6 +15,11 @@ $crud = elgg_extract('entity', $vars, FALSE);
 
 $object_subtype = $crud->getSubtype();
 
+$expanded_text = get_input($object_subtype.'_expanded');
+if ($expanded_text == 'yes') {
+	$expanded = true;
+}
+
 $crud_object = crud_get_handler($object_subtype);
 $child_subtype = $crud_object->children_type;
 
@@ -74,13 +79,13 @@ if (elgg_in_context('widgets')) {
 	$metadata = '';
 }
 
-if ($full) {
+if ($full || $expanded) {
 	//$icon = '';
 	$body = elgg_view($crud_object->crud_type . '/profile_extra', $vars);
 	$body .= elgg_view('output/longtext', array('value' => $crud->description));
 
 	$params = array(
-		'entity' => $page,
+		'entity' => $crud,
 		'title' => false,
 		'metadata' => $metadata,
 		'subtitle' => '',
@@ -88,7 +93,7 @@ if ($full) {
 	);
 	$variables = elgg_view('crud/object_variables', array('entity'=>$crud));
 
-	$params = $params + $vars;
+	$params = $params;
 	$list_body = elgg_view('object/elements/summary', $params);
 
 
@@ -100,18 +105,25 @@ if ($full) {
 
 	// Children
 	if (!empty($child_subtype)) {
-		$children = crud_list_children($crud);
+		$numchildren = crud_count_children($crud);
+		if ($crud_object->embed == 'firstchild' && $numchildren == 1) {
+			$child = crud_get_embedded_child($crud);
+			$children_content = elgg_view_entity($child, array('full_view'=>true));
+		}
+		else {
+			$children = crud_list_children($crud);
 
-		$children_content = '<div class="crud-children">';
-		$children_content .= '<h3><b>'.elgg_echo("$crud_object->module:$crud_object->crud_type:children").'</b></h3>';
-		if (!empty($children))
-			$children_content .= $children;
-		else
-			$children_content .= elgg_echo("crud:$object_subtype:nochildren");
-		$children_content .= '</div>';
-		$parent_guid = $crud->parent_guid;
-		if ($parent_guid) {
-			$parent = get_entity($parent_guid);
+			$children_content = '<div class="crud-children">';
+			$children_content .= '<h3><b>'.elgg_echo("$crud_object->module:$crud_object->crud_type:children").'</b></h3>';
+			if (!empty($children))
+				$children_content .= $children;
+			else
+				$children_content .= elgg_echo("crud:$object_subtype:nochildren");
+			$children_content .= '</div>';
+			$parent_guid = $crud->parent_guid;
+			if ($parent_guid) {
+				$parent = get_entity($parent_guid);
+			}
 		}
 	}
 
@@ -169,7 +181,7 @@ HTML;
 		$subtitle = elgg_echo("$crud_object->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
 	}
 	$params['subtitle'] = $subtitle;
-	$params['content'] = $content;
+	//$params['content'] = $content;
 
 	$params = $params + $vars;
 	$list_body = elgg_view('object/elements/summary', $params);
