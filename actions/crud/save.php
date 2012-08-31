@@ -72,19 +72,10 @@ if ($embed_guid && !$new_entity) {
 		forward(REFERER);
 	}
 }
-if (!$new_entity && empty($embedded_child)) {
-	$embedded_children = crud_count_children($entity);
-	if ($embedded_children > 1) {
-		$embedded_variables = array();
-	}
-	else {
-		$embedded_child = crud_get_embedded_child($entity);
-	}
-}
 
 if (sizeof($input) > 0) {
 	foreach ($input as $name => $value) {
-		if (in_array($name, $embedded_variables)) {
+		if (!empty($value) && in_array($name, $embedded_variables)) {
 			// embedded variable
 			if (!$embedded_child) {
 				$embedded_child = new ElggObject();
