@@ -51,7 +51,7 @@ foreach ($fields as $name => $field) {
 		}
 	}
 	$value = $vars[$name];
-	if ($embedded) {
+	if ($embedded && $embedded_child) {
 		$value = $embedded_child->$embedded;
 	}
 	echo elgg_view("input/$type", array_merge($field, array(
