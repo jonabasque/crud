@@ -167,7 +167,7 @@ HTML;
 
 	// Format parent link
 	if (elgg_get_context() == $crud->crud_type && $entity->parent_guid) {
-		$parent = get_entity($entity->parent_guid);
+		$parent = $entity->getParentEntity();
 		$parent_title = $parent->getTitleLink();
 
 		$subtitle = elgg_echo("$crud->crud_type:childof", array($parent_title_link))."<br />".$subtitle;

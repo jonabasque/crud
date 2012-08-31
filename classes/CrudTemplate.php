@@ -1,22 +1,55 @@
 <?php
 
+/**
+ * CrudTemplate
+ * Contains all crud class information.
+ */
 class CrudTemplate {
 	function __construct($type) {
+		// type of the described crud
 		$this->crud_type = $type;
+
+		// array describing member variables
 		$this->variables = array();
+
+		// module this class resides on
 		$this->module = $type;
+
+		// type for children, if not defined no children controls
+		// will be generated
 		$this->children_type = false;
+
+		// variable to use for generating an icon representation
 		$this->icon_var = false;
+
+		// whether children should be embedded
+		$this->embed = false;
+
+		// List variables
+		// variable to use for ordering entity listings
 		$this->list_order = false;
+
+		// variable to use for direction in ordering entity listings
 		$this->list_order_direction = 'ASC';
+
+		// variable to use for generating tabs on entity listings
 		$this->list_tabs = false;
+
 	}
+
+	/**
+	 *	Get the default value for some variable.
+	 */
 	function getDefaultValue($name, $default=NULL) {
 		if (isset($this->variables[$name]) && isset($this->variables[$name]['default_value'])) {
                         return $this->variables[$name]['default_value'];
                 }
 		return $default;
 	}
+
+	/**
+	 *	Get the content for a list tab based on selected tab
+	 */
 	function getListTabContent() {
 		$tab_var = $this->variables[$this->list_tabs];
 		$first_option = $tab_var->options[0];
@@ -55,6 +88,10 @@ class CrudTemplate {
 		}
 		return $content;
 	}
+
+	/**
+	 *	Show the header for a list tab based on selected tab
+	*/
 	function getListTabFilter() {
 		if (!$this->list_tabs)
 			return '';
