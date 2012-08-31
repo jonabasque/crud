@@ -90,9 +90,13 @@ if ($full || $expanded) {
 
 	$variables = elgg_view('crud/object_variables', array('entity' => $entity));
 
+	if (!$expanded) {
+		$title = false;
+	}
+
 	$params = array(
 		'entity' => $entity,
-		'title' => false,
+		'title' => $title,
 		'metadata' => $metadata,
 		'subtitle' => '',
 		'tags' => false,
