@@ -16,6 +16,7 @@ $parent_guid = $vars['parent_guid'];
 $fields = elgg_get_config($crud_type);
 
 if ($crud->embed && $object) {
+	$num_children = crud_count_children($object);
 	$embedded_child = crud_get_embedded_child($object);
 }
 
@@ -36,6 +37,11 @@ foreach ($fields as $name => $field) {
 		unset($field['output_view']);
 		unset($field['default_value']);
 	}
+
+	// dont show control for embedded children if there are more than 2
+	if ($embedded && $num_children > 1) {
+		continue;
+	}
 	
 	echo '<div>';
 	if ($type != 'hidden') {
@@ -45,7 +51,7 @@ foreach ($fields as $name => $field) {
 		}
 	}
 	$value = $vars[$name];
-	if ($embedded && $embedded_child) {
+	if ($embedded) {
 		$value = $embedded_child->$embedded;
 	}
 	echo elgg_view("input/$type", array_merge($field, array(
