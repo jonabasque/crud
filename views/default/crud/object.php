@@ -164,9 +164,7 @@ HTML;
 	// Format title
 	$title = $crud->title;
 	if (empty($title)) {
-		if (isset($crud_object->variables['title']) && isset($crud_object->variables['title']['default_value'])) {
-			$title = $crud_object->variables['title']['default_value'];
-		}
+		$title = $crud_object->getDefaultValue('title', '');
 	}
 
 	if ($crud_object->title_extend) {

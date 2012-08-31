@@ -11,6 +11,12 @@ class CrudObject {
 		$this->list_order_direction = 'ASC';
 		$this->list_tabs = false;
 	}
+	function getDefaultValue($name, $default=NULL) {
+		if (isset($this->variables[$name]) && isset($this->variables[$name]['default_value'])) {
+                        return $this->variables[$name]['default_value'];
+                }
+		return $default;
+	}
 	function getListTabContent() {
 		$tab_var = $this->variables[$this->list_tabs];
 		$first_option = $tab_var->options[0];
