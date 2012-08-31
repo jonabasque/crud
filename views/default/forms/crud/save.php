@@ -13,13 +13,17 @@ $vars['entity'] = $object;
 $container_guid = $vars['container_guid'];
 $parent_guid = $vars['parent_guid'];
 
-$variables = elgg_get_config($crud_type);
+$fields = elgg_get_config($crud_type);
 
-foreach ($variables as $name => $type) {
+foreach ($fields as $name => $field) {
 	
-	if (is_array($type)) {
-		$default_value = $type['default_value'];
-		$type = $type['input_type'];
+	if (!is_array($field)) {
+		$type = $field;
+		$default_value = "";
+		$field = array();
+	} else {
+		$type = $field['input_type'];
+		$default_value = $field['default_value'];
 	}
 	
 	echo '<div>';
@@ -29,11 +33,11 @@ foreach ($variables as $name => $type) {
 			echo '<br />';
 		}
 	}
-	echo elgg_view("input/$type", array(
+	echo elgg_view("input/$type", array_merge($field, array(
 		'crud' => $crud,
 		'name' => $name,
 		'value' => $vars[$name] ? $vars[$name] : $default_value,
-	));
+	)));
 	echo '</div>';
 }
 

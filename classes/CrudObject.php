@@ -1,14 +1,4 @@
 <?php
-/**
- * Extended class for crud objects
- */
-class CrudVariable {
-	function __construct($type, $options, $default) {
-		$this->var_type = $type;
-		$this->options = $options;
-		$this->default = $default;
-	}
-}
 
 class CrudObject {
 	function __construct($type) {
@@ -20,10 +10,6 @@ class CrudObject {
 		$this->list_order = false;
 		$this->list_order_direction = 'ASC';
 		$this->list_tabs = false;
-	}
-
-	function setVariable($name, $type, $options, $default) {
-		$this->variables[$name] = new CrudVariable($type, $options, $default);
 	}
 	function getListTabContent() {
 		$tab_var = $this->variables[$this->list_tabs];
