@@ -15,7 +15,7 @@ $parent_guid = $vars['parent_guid'];
 
 $fields = elgg_get_config($crud_type);
 
-if ($crud->embed) {
+if ($crud->embed && $object) {
 	$embedded_child = crud_get_embedded_child($object);
 }
 
