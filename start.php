@@ -82,6 +82,9 @@ function crud_page_handler($page) {
 	return true;
 }
 
+/**
+ * Register a crud class
+ */
 function crud_register_type($name, $variables, $class=NULL) {
 	crud_register_subtype($name, $class);
 
@@ -111,6 +114,9 @@ function crud_register_type($name, $variables, $class=NULL) {
 	return $object;
 }
 
+/**
+ * Get the crud handler for a given type
+ */
 function crud_get_handler($name) {
 	global $CONFIG;
 	if (isset($CONFIG->crud->handlers[$name])) {
@@ -119,6 +125,9 @@ function crud_get_handler($name) {
 	return $CONFIG->crud->handlers[$name] = new CrudTemplate($name);
 }
 
+/**
+ * Owner block handler
+ */
 function crud_owner_block_menu($hook, $type, $return, $params) {
 	global $CONFIG;
 	
@@ -166,6 +175,9 @@ function crud_init() {
 
 }
 
+/**
+ * Register a crud subtype class into elgg engine
+ */
 function crud_register_subtype($name, $class_name=NULL) {
 	if (empty($class_name))
 		$class_name = "CrudObject";
