@@ -38,6 +38,13 @@ class CrudTemplate {
 	}
 
 	/**
+	 *	Get the string prefix for language strings.
+	 */
+	function getStringPrefix() {
+		return "$this->module:$this->crud_type";
+	}
+
+	/**
 	 *	Get the default value for some variable.
 	 */
 	function getDefaultValue($name, $default=NULL) {

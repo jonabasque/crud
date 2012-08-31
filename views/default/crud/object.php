@@ -21,6 +21,8 @@ if ($expanded_text == 'yes') {
 }
 
 $crud = $entity->getCrudTemplate();
+
+$msg_prefix = $crud->getStringPrefix();
 $child_subtype = $crud->children_type;
 
 if (!$entity) {
@@ -37,7 +39,7 @@ if ($crud->icon_var) {
 		$status = 'new';
 	}
 
-	$icon = elgg_view('output/img', array('src'=>"/mod/$crud->module/graphics/$crud->crud_type-icons/$status.png", 'title' => elgg_echo("$crud->module:$object_subtype:$status")));
+	$icon = elgg_view('output/img', array('src'=>"/mod/$crud->module/graphics/$crud->crud_type-icons/$status.png", 'title' => elgg_echo("$msg_prefix:$status")));
 }
 else {
 	$icon = '';
@@ -84,6 +86,8 @@ if ($full || $expanded) {
 	$body = elgg_view($crud->crud_type . '/profile_extra', $vars);
 	$body .= elgg_view('output/longtext', array('value' => $entity->description));
 
+	$variables = elgg_view('crud/object_variables', array('entity' => $entity));
+
 	$params = array(
 		'entity' => $entity,
 		'title' => false,
@@ -91,16 +95,13 @@ if ($full || $expanded) {
 		'subtitle' => '',
 		'tags' => false,
 	);
-	$variables = elgg_view('crud/object_variables', array('entity'=>$entity));
-
-	$params = $params;
 	$list_body = elgg_view('object/elements/summary', $params);
 
 
 	$info = elgg_view_image_block($icon, $list_body);
 
 	// Owner
-	$body .= "<b>".elgg_echo("$crud->module:$crud->crud_type:owner", array($owner_link))."</b>";
+	$body .= "<b>".elgg_echo("$msg_prefix:owner", array($owner_link))."</b>";
 	$body .= $variables;
 
 	// Children
@@ -108,13 +109,13 @@ if ($full || $expanded) {
 		$numchildren = $entity->getChildren(TRUE);;
 		if ($crud->embed == 'firstchild' && $numchildren == 1) {
 			$child = $entity->getEmbeddedChild();
-			$title = elgg_echo("$crud->module:$crud->crud_type:child");
+			$title = elgg_echo("$msg_prefix:child");
 			$content = elgg_view_entity($child, array('full_view'=>true));
 		}
 		else {
 			$children = $entity->listChildren();
 
-			$title = elgg_echo("$crud->module:$crud->crud_type:children");
+			$title = elgg_echo("$msg_prefix:children");
 			if (!empty($children))
 				$content .= $children;
 			else
@@ -138,7 +139,7 @@ HTML;
 	$children_count = $entity->getChildren(TRUE);
 	//only display if there are commments
 	if ($children_count != 0) {
-		$text = elgg_echo("$crud->module:$crud->crud_type:children") . " ($children_count)";
+		$text = elgg_echo("$msg_prefix:children") . " ($children_count)";
 		$children_link = elgg_view('output/url', array(
 			'href' => $entity->getURL() . '#crud-children',
 			'text' => $text,
