@@ -90,6 +90,7 @@ function crud_register_type($name, $variables) {
 		$variables = array_merge($prev_variables, $variables);
 	}
 	elgg_set_config($name, $variables);
+	$object->variables = $variables;
 
 	if (empty($prev_variables)) {
 		// Register for search.
