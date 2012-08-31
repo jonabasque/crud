@@ -170,7 +170,7 @@ HTML;
 		$parent = $entity->getParentEntity();
 		$parent_title = $parent->getTitleLink();
 
-		$subtitle = elgg_echo("$crud->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
+		$subtitle = elgg_echo("$crud->crud_type:childof", array($parent_title))."<br />".$subtitle;
 	}
 	$params['subtitle'] = $subtitle;
 	//$params['content'] = $content;
