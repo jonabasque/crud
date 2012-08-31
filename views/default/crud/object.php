@@ -68,18 +68,19 @@ if ($comments_count != 0) {
 	$comments_link = '';
 }
 
-$metadata = elgg_view_menu('entity', array(
-	'entity' => $vars['entity'],
-	'handler' => $object_subtype,
-	'sort_by' => 'priority',
-	'class' => 'elgg-menu-hz',
-));
-
 $subtitle = "$strapline $categories $comments_link";
 
 // do not show the metadata and controls in widget view
 if (elgg_in_context('widgets')) {
 	$metadata = '';
+}
+else {
+	$metadata = elgg_view_menu('entity', array(
+		'entity' => $vars['entity'],
+		'handler' => $object_subtype,
+		'sort_by' => 'priority',
+		'class' => 'elgg-menu-hz',
+	));
 }
 
 if ($full || $expanded) {
