@@ -29,33 +29,24 @@ if (!$entity) {
 	return TRUE;
 }
 
-// $icon = elgg_view_entity_icon($entity, 'tiny');
-
-// Override icon completely for now
-if ($crud->icon_var) {
-	$var_name = $crud->icon_var;
-	$status = $entity->$var_name;
-
-	if(empty($status)) {
-		$status = 'new';
-	}
-
-	$icon = elgg_view('output/img', array('src'=>"/mod/$crud->module/graphics/$crud->crud_type-icons/$status.png", 'title' => elgg_echo("$msg_prefix:$status")));
-}
-else {
-	$icon = '';
+// Show icon
+if ($entity->getCrudIcon()) {
+	$icon = elgg_view_entity_icon($entity, 'tiny');
 }
 
+// Owner link
 $owner = get_entity($entity->owner_guid);
 $owner_link = elgg_view('output/url', array(
 	'href' => "crud/owner/$owner->username",
 	'text' => $owner->name,
 ));
 
-$date = elgg_view_friendly_time($entity->time_status_changed);
+// Strapline (disabled for now) and tags
+//$date = elgg_view_friendly_time($entity->time_status_changed);
 //$strapline = elgg_echo("crud:strapline:$status", array($date, $owner_link));
 $tags = elgg_view('output/tags', array('tags' => $entity->tags));
 
+// Comments
 $comments_count = $entity->countComments();
 //only display if there are commments
 if ($comments_count != 0) {
@@ -83,8 +74,8 @@ else {
 	));
 }
 
+// Show views
 if ($full || $expanded) {
-	//$icon = '';
 	$body = elgg_view($crud->crud_type . '/profile_extra', $vars);
 	$body .= elgg_view('output/longtext', array('value' => $entity->description));
 

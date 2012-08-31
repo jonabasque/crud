@@ -110,8 +110,27 @@ function crud_register_type($name, $variables, $class=NULL) {
 		$action_path = elgg_get_plugins_path() . 'crud/actions/crud';
 		elgg_register_action("$name/save", "$action_path/save.php");
 		elgg_register_action("$name/delete", "$action_path/delete.php");
+
+		// icon url override
+ 	        elgg_register_plugin_hook_handler('entity:icon:url', 'object', 'crud_icon_url_override');
 	}
 	return $object;
+}
+
+/**
+ * Override the default entity icon for crud entities
+ *
+ * @return string Relative URL
+ */
+function crud_icon_url_override($hook, $type, $returnvalue, $params) {
+        $entity = $params['entity'];
+        if ($entity instanceof CrudObject) {
+		$size = $params['size'];
+		if (!$size)
+			$icon = 'tiny';
+		$icon = $entity->getCrudIcon($size);
+        }
+	return $icon;
 }
 
 /**

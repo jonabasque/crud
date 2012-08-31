@@ -16,7 +16,7 @@ $tabs = array('all' => array(
                 'priority' => 200,
         ));
 $tab_var = $crud->variables[$crud->list_tabs];
-$tab_options = $tab_var->options;
+$tab_options = $tab_var['options'];
 
 $priority = 300;
 

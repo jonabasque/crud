@@ -76,6 +76,29 @@ class CrudObject extends ElggObject  {
 	}
 
 	/**
+	 * Return an icon for the entity
+	 */
+	function getCrudIcon($size='tiny') {
+		$crud = $this->getCrudTemplate();
+
+		// Override icon completely for now
+		if ($crud->icon_var) {
+			$var_name = $crud->icon_var;
+			$status = $this->$var_name;
+
+			if(empty($status)) {
+				$status = 'new';
+			}
+
+			$icon = "mod/$crud->module/graphics/$crud->crud_type-icons/$status.png";
+		}
+		else {
+			$icon = NULL;
+		}
+		return $icon;
+	}
+
+	/**
 	 * Get children for given entity
 	 */
 	function getChildren($count=FALSE) {
