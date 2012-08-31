@@ -232,7 +232,7 @@ function crud_handle_view_page($crud, $guid) {
 
 	$params = array(
 		'content' => $content,
-		'title' => $entity->title,
+		'title' => $entity->getTitle(true),
 		'filter' => '',
 	);
 	$body = elgg_view_layout('content', $params);

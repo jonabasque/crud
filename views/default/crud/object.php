@@ -120,10 +120,6 @@ if ($full || $expanded) {
 			else
 				$children_content .= elgg_echo("crud:$object_subtype:nochildren");
 			$children_content .= '</div>';
-			$parent_guid = $crud->parent_guid;
-			if ($parent_guid) {
-				$parent = get_entity($parent_guid);
-			}
 		}
 	}
 
@@ -162,37 +158,15 @@ HTML;
 
 
 	// Format title
-	$title = $crud->title;
-	if (empty($title)) {
-		$title = $crud_object->getDefaultValue('title', '');
-	}
+	$title_link = $crud->getTitleLink();
 
-	if ($crud_object->title_extend) {
-		$varname = $crud_object->title_extend;
-		$value = date(elgg_echo('crud:date_format'), $crud->$varname);
-		if ($title)
-			$title .= ", $value";
-		else
-			$title = $value;
-	}
-
-	$title_link = elgg_view('output/url', array(
-		'href' => $crud->getURL(),
-		'text' => $title,
-	));
 	$params['title'] = $title_link;
 
 	// Format parent link
 	if (elgg_get_context() == $crud_object->crud_type && $crud->parent_guid) {
 		$parent = get_entity($crud->parent_guid);
-		$parent_title = $parent->title;
-		if (empty($parent_title)) {
-			$parent_title = date(elgg_echo('crud:date_format'), $parent->date);
-		}
-		$parent_title_link = elgg_view('output/url', array(
-			'href' => $parent->getURL(),
-			'text' => $parent_title,
-	        ));
+		$parent_title = $parent->getTitleLink();
+
 		$subtitle = elgg_echo("$crud_object->crud_type:childof", array($parent_title_link))."<br />".$subtitle;
 	}
 	$params['subtitle'] = $subtitle;
