@@ -18,6 +18,11 @@ $tabs = array('all' => array(
 $tab_var = $crud->variables[$crud->list_tabs];
 $tab_options = $tab_var['options'];
 
+$selected = $vars['selected'];
+if (!$selected) {
+	$selected = 'all';
+}
+
 $priority = 300;
 
 foreach($tab_options as $tab_option) {
@@ -33,7 +38,7 @@ foreach($tab_options as $tab_option) {
 foreach ($tabs as $name => $tab) {
 	$tab['name'] = $name;
 
-	if ($vars['selected'] == $name) {
+	if ($selected == $name) {
 		$tab['selected'] = true;
 	}
 
