@@ -8,7 +8,7 @@
 
 $crud = $vars['crud'];
 $container_guid = elgg_get_page_owner_guid();
-$msg_prefix = "$crud->module:$crud->crud_type";
+$msg_prefix = "$crud->module:$crud->crud_type:section";
 
 $tabs = array('all' => array(
                 'text' => elgg_echo($msg_prefix.':all'),
