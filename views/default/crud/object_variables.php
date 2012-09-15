@@ -2,6 +2,7 @@
 	$entity = $vars['entity'];
 	$object_subtype = $entity->getSubtype();
 	$crud_object = crud_get_handler($object_subtype);
+	$children_categories = $crud_object->children_categories;
 
 	$variables = elgg_get_config($object_subtype);
 	foreach ($variables as $name => $type) {
@@ -16,6 +17,9 @@
 			continue;
 		}
 		if (!$value) {
+			continue;
+		}
+		if ($children_categories == $name) {
 			continue;
 		}
 	?>
