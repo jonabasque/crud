@@ -39,6 +39,11 @@ foreach ($fields as $name => $field) {
 		unset($field['default_value']);
 	}
 
+	// dont show control if parentselect type but no parent is defined.
+	if ($type == 'crud/parentselect' && empty($parent)) {
+		continue;
+	}
+
 	// dont show control for embedded children if there are more than 2
 	if ($embedded && $num_children > 1) {
 		continue;

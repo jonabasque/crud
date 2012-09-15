@@ -63,6 +63,19 @@ class CrudObject extends ElggObject  {
 		if ($crud->children_categories) {
 			return $this->listChildrenCategories();
 		}
+		else {
+			return $this->listChildrenRaw();
+		}
+	}
+
+
+	/**
+	 * List children for given entity
+	 *
+	 * @param entity $entity Entity to operate on
+	 */
+	function listChildrenRaw() {
+		$crud = $this->getCrudTemplate();
 		$child_subtype = $crud->children_type;
 		$child_options = array('full_view' => FALSE,
 				'types' => 'object',
@@ -88,6 +101,10 @@ class CrudObject extends ElggObject  {
 		$crud = $this->getCrudTemplate();
 		$category_property = $crud->children_categories;
 		$categories = $this->$category_property;
+
+		if (empty($categories)) {
+			return $this->listChildrenRaw();
+		}
 
 		$child_subtype = $crud->children_type;
 		foreach($categories as $category) {

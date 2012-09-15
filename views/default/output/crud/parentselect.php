@@ -1,3 +1,3 @@
 <?php
 
-echo $vars['value'];
+echo ucfirst($vars['value']);

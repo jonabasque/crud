@@ -35,6 +35,7 @@
 		?>
 		<?php echo elgg_view("output/$type", array(
 				'name' => $name,
+				'crud' => $crud_object,
 				'value' => $value,
 			));
 		?>
