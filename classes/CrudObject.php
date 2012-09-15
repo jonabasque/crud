@@ -60,6 +60,9 @@ class CrudObject extends ElggObject  {
 	 */
 	function listChildren() {
 		$crud = $this->getCrudTemplate();
+		if ($crud->children_categories) {
+			return $this->listChildrenCategories();
+		}
 		$child_subtype = $crud->children_type;
 		$child_options = array('full_view' => FALSE,
 				'types' => 'object',
@@ -74,6 +77,65 @@ class CrudObject extends ElggObject  {
 		$children = elgg_list_entities_from_metadata($child_options);
 		return $children;
 	}
+
+	/**
+	 * List children for given entity per category
+	 *
+	 * @param entity $entity Entity to operate on
+	 */
+	function listChildrenCategories() {
+		global $CONFIG;
+		$crud = $this->getCrudTemplate();
+		$category_property = $crud->children_categories;
+		$categories = $this->$category_property;
+
+		$child_subtype = $crud->children_type;
+		foreach($categories as $category) {
+			$children .= "<h4>".ucfirst($category)."</h4>";
+			$child_options = array('full_view' => FALSE,
+					'types' => 'object',
+					'subtypes' => $child_subtype,
+					'limit' => 10,
+					'metadata_name_value_pairs' => array(
+						array('name' => 'parent_guid',
+							'value' => $this->guid),
+						array('name' => $category_property,
+							'value' => $category)
+						),
+					);
+
+			$children .= elgg_list_entities_from_metadata($child_options);
+
+		}
+		$children .= "<h4>".elgg_echo('crud:categories:other')."</h4>";
+		$child_options = array('full_view' => FALSE,
+				'types' => 'object',
+				'subtypes' => $child_subtype,
+				'limit' => 10,
+				'metadata_name_value_pairs' => array(
+					array('name' => 'parent_guid',
+						'value' => $this->guid))
+				);
+
+		 $name_metastring_id = get_metastring_id($category_property);
+		 $value_metastring_ids = array();
+		 foreach($categories as $category) {
+			$value_metastring_ids[] = get_metastring_id($category);
+		 }
+		 $value_metastring_id = implode(",", $value_metastring_ids);
+
+		 $child_options['wheres'][] = "NOT EXISTS (
+                       SELECT 1 FROM {$CONFIG->dbprefix}metadata md
+                       WHERE md.entity_guid = e.guid
+                               AND md.name_id = $name_metastring_id
+                               AND md.value_id IN ($value_metastring_id))";
+
+
+		$children .= elgg_list_entities_from_metadata($child_options);
+
+		return $children;
+	}
+
 
 	/**
 	 * Return an icon for the entity

@@ -12,6 +12,7 @@ $vars['entity'] = $entity;
 
 $container_guid = $vars['container_guid'];
 $parent_guid = $vars['parent_guid'];
+$parent = get_entity($parent_guid);
 
 $fields = elgg_get_config($crud_type);
 
@@ -57,6 +58,7 @@ foreach ($fields as $name => $field) {
 	echo elgg_view("input/$type", array_merge($field, array(
 		'crud' => $crud,
 		'name' => $name,
+		'parent' => $parent,
 		'value' => $value ? $value : $default_value,
 	)));
 	echo '</div>';

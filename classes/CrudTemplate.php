@@ -19,6 +19,9 @@ class CrudTemplate {
 		// will be generated
 		$this->children_type = false;
 
+		// property that defines categories for children
+		$this->children_categories = false;
+
 		// variable to use for generating an icon representation
 		$this->icon_var = false;
 
@@ -52,6 +55,15 @@ class CrudTemplate {
                         return $this->variables[$name]['default_value'];
                 }
 		return $default;
+	}
+
+	/**
+	 *	Get data for the given variable
+	 */
+	function getVariableData($name) {
+		if (isset($this->variables[$name])) {
+                        return $this->variables[$name];
+                }
 	}
 
 	/**

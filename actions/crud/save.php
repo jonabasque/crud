@@ -21,7 +21,7 @@ foreach ($variables as $name => $field) {
 	if (!is_array($field)) {
 		$type = $field;
 	} else {
-		$type = $field['input_type'];
+		$type = $field['type'];
 		if (!empty($field['embedded'])) {
 			$embedded_variables[] = $name;
 		}
