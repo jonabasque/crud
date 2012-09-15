@@ -60,6 +60,16 @@ function crud_handle_list_page($crud, $guid) {
 		'filter' => $navigation,
 	);
 
+	$sidebar = elgg_view('crud/tagcloud_block', array(
+                'subtypes' => $crud->crud_type,
+                'owner_guid' => elgg_get_page_owner_guid(),
+ 	       ));
+	if (isset($params['sidebar'])) {
+		$params['sidebar'] .= $sidebar;
+	} else {
+		$params['sidebar'] = $sidebar;
+	}
+
 	$body = elgg_view_layout('content', $params);
 
 	echo elgg_view_page($title, $body);
@@ -245,6 +255,18 @@ function crud_handle_view_page($crud, $guid) {
 		'title' => $entity->getTitle(true),
 		'filter' => '',
 	);
+	
+	$sidebar = elgg_view('crud/tagcloud_block', array(
+                'subtypes' => $crud->crud_type,
+                'owner_guid' => elgg_get_page_owner_guid(),
+ 	       ));
+	if (isset($params['sidebar'])) {
+		$params['sidebar'] .= $sidebar;
+	} else {
+		$params['sidebar'] = $sidebar;
+	}
+
+
 	$body = elgg_view_layout('content', $params);
 
 	echo elgg_view_page($entity->title, $body);
