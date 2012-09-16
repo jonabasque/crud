@@ -69,7 +69,61 @@ class CrudTemplate {
 	/**
 	 *	Get the content for a list tab based on selected tab
 	 */
+	function getDateTabContent() {
+		$tab_var = $this->variables[$this->list_tabs];
+		$first_option = $tab_var->options[0];
+		$selected_tab = get_input('filter', $first_option);
+
+		$container_guid = elgg_get_page_owner_guid();
+
+		$options = array(
+			'type' => 'object',
+			'subtype' => $this->crud_type,
+			'limit' => 10,
+		#       'order_by' => 'e.last_action desc',
+			'container_guid' => $container_guid,
+			'full_view' => false,
+        	);
+		if ($selected_tab == 'next') {
+			$operand = '>=';
+			$direction = 'ASC';
+			$metadata_search = true;
+		}
+		elseif ($selected_tab == 'previous') {
+			$operand = '<';
+			$direction = 'DESC';
+			$metadata_search = true;
+		}
+		if ($metadata_search) {
+			$options['metadata_name_value_pairs'] = array(
+                               array('name' => 'date',
+					'operand' => $operand,
+                                        'value' => time())
+                                );
+
+			$metadata_search = true;
+	                $options['order_by_metadata'] = array('name' => 'date',
+                                                      'direction' => $direction);
+
+			$content = elgg_list_entities_from_metadata($options);
+		}
+		else {
+			$content = elgg_list_entities($options);
+		}
+		if (!$content) {
+			$content = elgg_echo($this->module.':'.$this->crud_type.':none');
+		}
+		return $content;
+	}
+
+
+	/**
+	 *	Get the content for a list tab based on selected tab
+	 */
 	function getListTabContent() {
+		if ($this->list_tabs == 'date') {
+			return $this->getDateTabContent();
+		}
 		$tab_var = $this->variables[$this->list_tabs];
 		$first_option = $tab_var->options[0];
 		$selected_tab = get_input('filter', $first_option);
@@ -109,15 +163,32 @@ class CrudTemplate {
 	}
 
 	/**
+	 *	Show the header for a list tab based on date
+	*/
+	function getDateTabFilter() {
+		$tab_var = $this->variables[$this->list_tabs];
+		$first_option = $tab_var->options[0];
+		$selected_tab = get_input('filter', $first_option);
+		$filter = elgg_view('crud/crud_date_sort_menu',
+					array('selected' => $selected_tab, 
+					'crud' => $this));
+		return $filter;
+	}
+
+	/**
 	 *	Show the header for a list tab based on selected tab
 	*/
 	function getListTabFilter() {
 		if (!$this->list_tabs)
 			return '';
+		if ($this->list_tabs == 'date')
+			return $this->getDateTabFilter();;
 		$tab_var = $this->variables[$this->list_tabs];
 		$first_option = $tab_var->options[0];
 		$selected_tab = get_input('filter', $first_option);
-		$filter = elgg_view('crud/crud_sort_menu', array('selected' => $selected_tab, 'crud'=>$this));
+		$filter = elgg_view('crud/crud_sort_menu',
+			array('selected' => $selected_tab,
+			'crud' => $this));
 		return $filter;
 	}
 }

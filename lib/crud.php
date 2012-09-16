@@ -46,17 +46,18 @@ function crud_handle_list_page($crud, $guid) {
 	);
 
 
-	$content = elgg_view($crud->module."/$crud_type"."_general", array('entity'=>$guid));
-	if ($content) {
+	$head_content = elgg_view($crud->module."/$crud_type"."_general", array('entity'=>$guid));
+	if ($head_content) {
 		elgg_register_title_button($crud->crud_type, 'edit_general');
 	}
 
 	$navigation = $crud->getListTabFilter();
-	$content .= $crud->getListTabContent();
+	$content = $crud->getListTabContent();
 
 	$params = array(
 		'content' => $content,
 		'title' => $title,
+		'footer' => $head_content,
 		'filter' => $navigation,
 	);
 
