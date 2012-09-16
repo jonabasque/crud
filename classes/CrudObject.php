@@ -81,6 +81,7 @@ class CrudObject extends ElggObject  {
 				'types' => 'object',
 				'subtypes' => $child_subtype,
 				'limit' => 10,
+				'list_class' => 'list-'.$child_subtype,
 				'metadata_name_value_pairs' => array(
 					array('name' => 'parent_guid',
 						'value' => $this->guid)
@@ -113,6 +114,7 @@ class CrudObject extends ElggObject  {
 					'types' => 'object',
 					'subtypes' => $child_subtype,
 					'limit' => 10,
+					'list_class' => 'list-'.$child_subtype,
 					'metadata_name_value_pairs' => array(
 						array('name' => 'parent_guid',
 							'value' => $this->guid),
@@ -129,6 +131,7 @@ class CrudObject extends ElggObject  {
 				'types' => 'object',
 				'subtypes' => $child_subtype,
 				'limit' => 10,
+				'list_class' => 'list-'.$child_subtype,
 				'metadata_name_value_pairs' => array(
 					array('name' => 'parent_guid',
 						'value' => $this->guid))
