@@ -27,7 +27,7 @@
 		<?php
 			if ($name != 'tags') {
 		?>
-		<label><b><?php echo elgg_echo("$crud_object->module:$object_subtype:$name") ?>: </b></label>
+		<label><?php echo elgg_echo("$crud_object->module:$object_subtype:$name") ?>: </label>
 		<?php
 			}
 			if ($type != 'longtext') {

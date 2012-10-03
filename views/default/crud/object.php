@@ -84,22 +84,20 @@ if ($full || $expanded) {
 	if (!$expanded) {
 		$title = false;
 	}
+	
+	$subtext .= elgg_echo("$msg_prefix:owner", array($owner_link));
+	$subtext .= $variables;
 
 	$params = array(
 		'entity' => $entity,
 		'title' => $title,
 		'metadata' => $metadata,
-		'subtitle' => '',
+		'subtitle' => $subtext,
 		'tags' => false,
 	);
 	$list_body = elgg_view('object/elements/summary', $params);
 
-
 	$info = elgg_view_image_block($icon, $list_body);
-
-	// Owner
-	$body .= "<b>".elgg_echo("$msg_prefix:owner", array($owner_link))."</b>";
-	$body .= $variables;
 
 	// Children
 	if (!empty($child_subtype)) {
@@ -119,7 +117,7 @@ if ($full || $expanded) {
 				$content .= elgg_echo("crud:$object_subtype:nochildren");
 		}
 		$children_content = '<div class="crud-children">';
-		$children_content .= "<h3><b>$title</b></h3>";
+		$children_content .= "<h3>$title</h3>";
 		$children_content .= $content;
 		$children_content .= '</div>';
 	}
