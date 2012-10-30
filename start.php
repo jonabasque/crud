@@ -160,7 +160,10 @@ function crud_owner_block_menu($hook, $type, $return, $params) {
 			$item = new ElggMenuItem($handler_name, elgg_echo($handler_name), $url);
 			$return[] = $item;
 		} elseif ($handler->owner_menu != 'user') {
-			$enable = "{$handler->module}_enable";
+			if ($handler->module_check)
+				$enable = "{$handler->module_check}_enable";
+			else
+				$enable = "{$handler->module}_enable";
 			if ($params['entity']->$enable == "yes") {
 				$owner_label = ($handler->owner_menu == 'group') ? 'owner' : 'group';
 				$url = "$handler_name/$owner_label/{$params['entity']->guid}/all";
