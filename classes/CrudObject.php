@@ -142,6 +142,9 @@ class CrudObject extends ElggObject  {
 		 foreach($categories as $category) {
 			$value_metastring_ids[] = get_metastring_id($category);
 		 }
+		 if (empty($value_metastring_ids)) {
+			return "";
+		 }
 		 $value_metastring_id = implode(",", $value_metastring_ids);
 
 		 $child_options['wheres'][] = "NOT EXISTS (
