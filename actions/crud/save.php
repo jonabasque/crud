@@ -54,6 +54,9 @@ foreach ($variables as $name => $field) {
 	if ($type == 'date') {
 		$input[$name] = strtotime($input[$name]." ".date_default_timezone_get());
 	}
+	if ($type == 'time') {
+		$input[$name] = get_input($name . '_hour') * 60 + get_input($name . '_minute');
+	}
 }
 
 // Get guids
