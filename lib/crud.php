@@ -54,7 +54,7 @@ function crud_handle_list_page($crud, $guid) {
 
 	elgg_register_title_button();
 
-	if (elgg_view_exists("forms/$crud->module/general")) {
+	if (elgg_view_exists("forms/$crud->module/{$crud_type}_general")) {
 		elgg_register_title_button($crud->crud_type, 'edit_general');
 	}
 
@@ -135,7 +135,7 @@ function crud_handle_edit_page($crud, $type, $guid) {
 		elgg_push_breadcrumb($title);
 
 		$body_vars = crud_prepare_form_vars($crud, $entity, $parent);
-		$content = elgg_view_form($crud->module.'/general', array('crud' => $crud), $body_vars);
+		$content = elgg_view_form("$crud->module/{$crud_type}_general", array('crud' => $crud), $body_vars);
 
 	} else {
 		$entity = get_entity($guid);
