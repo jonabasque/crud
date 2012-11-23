@@ -47,48 +47,30 @@ function crud_handle_list_page($crud, $guid) {
 		register_error(elgg_echo('groups:notfound'));
 		forward();
 	}
+
+	group_gatekeeper();
+
 	elgg_push_breadcrumb($group->name);
 
 	elgg_register_title_button();
 
-	group_gatekeeper();
-
-	$title = elgg_echo('item:object:' . $crud_type);
-	
-	$options = array(
-		'type' => 'object',
-		'subtype' => $crud_type,
-		'limit' => 10,
-	#	'order_by' => 'e.last_action desc',
-		'container_guid' => $guid,
-		'full_view' => false,
-	);
-
-
-	$head_content = elgg_view($crud->module."/$crud_type"."_general", array('entity'=>$guid));
-	if ($head_content) {
+	if (elgg_view_exists("forms/$crud->module/general")) {
 		elgg_register_title_button($crud->crud_type, 'edit_general');
 	}
 
-	$navigation = $crud->getListTabFilter();
-	$content = $crud->getListTabContent();
+	$title = elgg_echo("item:object:$crud_type");
 
 	$params = array(
-		'content' => $content,
 		'title' => $title,
-		'footer' => $head_content,
-		'filter' => $navigation,
+		'content' => $crud->getListTabContent(),
+		'footer' => elgg_view("$crud->module/{$crud_type}_general", array('entity' => $group)),
+		'filter' => $crud->getListTabFilter(),
 	);
 
-	$sidebar = elgg_view('crud/tagcloud_block', array(
-                'subtypes' => $crud->crud_type,
-                'owner_guid' => elgg_get_page_owner_guid(),
- 	       ));
-	if (isset($params['sidebar'])) {
-		$params['sidebar'] .= $sidebar;
-	} else {
-		$params['sidebar'] = $sidebar;
-	}
+	$params['sidebar'] .= elgg_view('crud/tagcloud_block', array(
+		'subtypes' => $crud->crud_type,
+		'owner_guid' => elgg_get_page_owner_guid(),
+	));
 
 	$body = elgg_view_layout('content', $params);
 

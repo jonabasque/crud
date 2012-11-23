@@ -67,12 +67,10 @@ function crud_page_handler($page) {
 		$page[0] = 'all';
 	}
 
-	$current_url = $_SERVER['REQUEST_URI'];
 	$page_url = current_page_url();
 	$site_url = elgg_get_site_url();
 	$current_url = str_replace($site_url, "", $page_url);
-	$url_parts = explode('/', $current_url);
-	$crud_type = $url_parts[0];
+	$crud_type = current(explode('/', $current_url));
 	$crud_handler = crud_get_handler($crud_type);
 	$crud_module = $crud_handler->module;
 
