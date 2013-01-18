@@ -5,7 +5,7 @@
  * @package        Lorea
  * @subpackage     CRUD
  *
- * Copyright 2012 Lorea Faeries <federation@lorea.org>
+ * Copyright 2012-2013 Lorea Faeries <federation@lorea.org>
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -22,9 +22,9 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-$spanish = array(
+$language = array(
 	'crud:date_format' => 'j F Y',
 	'crud:categories:other' => 'Sin clasificar',
 );
 
-add_translation('es', $spanish);
+add_translation('es', $language);

@@ -5,7 +5,7 @@
  * @package        Lorea
  * @subpackage     CRUD
  *
- * Copyright 2012 Lorea Faeries <federation@lorea.org>
+ * Copyright 2012-2013 Lorea Faeries <federation@lorea.org>
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -30,13 +30,13 @@
 
 	$variables = elgg_get_config($object_subtype);
 	foreach ($variables as $name => $type) {
-		
+
 		if (is_array($type)) {
 			$type = elgg_extract('output_view', $type, elgg_extract('type', $type));
 		}
-		
+
 		$value = $entity->$name;
-		
+
 		if (in_array($name, array('title', 'description', 'access_id'))) {
 			continue;
 		}
