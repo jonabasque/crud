@@ -53,6 +53,7 @@ foreach ($variables as $name => $field) {
 	}
 	if ($type == 'date') {
 		$input[$name] = strtotime($input[$name]." ".date_default_timezone_get());
+		$input[$name] = strtotime('+1 day', $input[$name]);
 	}
 	if ($type == 'time') {
 		$input[$name] = get_input($name . '_hour') * 60 + get_input($name . '_minute');
